@@ -35,15 +35,16 @@ resource "aws_ecs_capacity_provider" "this" {
 resource "aws_ecs_cluster_capacity_providers" "this" {
   cluster_name = var.ecs_cluster_name
 
-  capacity_providers = [for i in var.capacity_providers : element(var.capacity_providers, i).name]
+  capacity_providers = [for capacity_provider in var.capacity_providers : capacity_provider.name]
 
   dynamic "default_capacity_provider_strategy" {
     for_each = var.default_capacity_provider_strategies
+    iterator = default_capacity_provider_strategies
 
     content {
-      capacity_provider = each.value.capacity_provider
-      base              = each.value.base
-      weight            = each.value.weight
+      capacity_provider = default_capacity_provider_strategies.value.capacity_provider
+      base              = default_capacity_provider_strategies.value.base
+      weight            = default_capacity_provider_strategies.value.weight
     }
   }
 }

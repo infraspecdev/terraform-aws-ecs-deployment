@@ -4,12 +4,12 @@
 
 output "ids" {
   description = "Identifiers for the ECS Capacity Providers"
-  value       = [for i in aws_ecs_capacity_provider.this : aws_ecs_capacity_provider.this[i].id]
+  value       = [for ecs_capacity_provider in aws_ecs_capacity_provider.this : ecs_capacity_provider.id]
 }
 
 output "arns" {
   description = "ARNs for the ECS Capacity Providers"
-  value       = [for i in aws_ecs_capacity_provider.this : aws_ecs_capacity_provider.this[i].arn]
+  value       = [for ecs_capacity_provider in aws_ecs_capacity_provider.this : ecs_capacity_provider.arn]
 }
 
 ################################################################################
