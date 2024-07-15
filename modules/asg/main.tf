@@ -54,7 +54,7 @@ resource "aws_launch_template" "this" {
     name = var.create_iam_instance_profile ? aws_iam_instance_profile.this[0].name : var.iam_instance_profile_name
   }
 
-  user_data = var.launch_template.user_data ? base64encode(var.launch_template.user_data) : ""
+  user_data = try(var.launch_template.user_data, null) != null ? base64encode(var.launch_template.user_data) : null
 
   tags = var.launch_template.tags
 }

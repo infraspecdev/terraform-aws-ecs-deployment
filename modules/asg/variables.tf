@@ -102,7 +102,7 @@ variable "create_iam_role" {
 variable "iam_role_name" {
   description = "Name for the IAM Role"
   type        = string
-  default     = ""
+  default     = null
 }
 
 variable "iam_role_tags" {
@@ -129,7 +129,7 @@ variable "create_iam_instance_profile" {
 variable "iam_instance_profile_name" {
   description = "Name of the IAM Instance Profile"
   type        = string
-  default     = ""
+  default     = null
 }
 
 variable "iam_instance_profile_tags" {
