@@ -16,7 +16,7 @@ variable "capacity_providers" {
         maximum_scaling_step_size = optional(number)
       })
     )
-    tags = map(any)
+    tags = optional(map(any), {})
   }))
   default = {}
 }

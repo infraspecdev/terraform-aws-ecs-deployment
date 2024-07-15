@@ -68,7 +68,7 @@ variable "launch_template" {
     vpc_security_group_ids = optional(list(string), [])
     key_name               = optional(string, "")
     user_data              = optional(string, "")
-    tags                   = map(any)
+    tags                   = optional(map(any), {})
   })
 }
 
