@@ -27,6 +27,10 @@ resource "aws_acm_certificate" "amazon_issued" {
     }
   }
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
   tags = merge(var.tags, each.value.tags)
 }
 
@@ -41,6 +45,10 @@ resource "aws_acm_certificate" "imported" {
   certificate_body  = each.value.certificate_body
   certificate_chain = each.value.certificate_chain
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
   tags = merge(var.tags, each.value.tags)
 }
 
@@ -54,6 +62,10 @@ resource "aws_acm_certificate" "private_ca_issued" {
   certificate_authority_arn = each.value.certificate_authority_arn
   domain_name               = each.value.domain_name
   early_renewal_duration    = each.value.early_renewal_duration
+
+  lifecycle {
+    create_before_destroy = true
+  }
 
   tags = merge(var.tags, each.value.tags)
 }
