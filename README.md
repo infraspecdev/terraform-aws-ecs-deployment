@@ -1,5 +1,5 @@
 <!-- BEGIN_TF_DOCS -->
-# terraform-aws-ecs-service-deployment
+# terraform-aws-ecs-deployment
 
 ## Requirements
 
