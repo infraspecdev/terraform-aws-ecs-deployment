@@ -84,7 +84,7 @@ variable "launch_template_id" {
   default     = null
 
   validation {
-    condition     = var.launch_template_id == null || startswith(var.launch_template_id, "lt-")
+    condition     = var.launch_template_id == null || startswith(var.launch_template_id != null ? var.launch_template_id : "", "lt-")
     error_message = "Specified launch template id must be valid launch template identifier starting with \"lt-\"."
   }
 }
