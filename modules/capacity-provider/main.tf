@@ -22,7 +22,7 @@ resource "aws_ecs_capacity_provider" "this" {
       }
     }
 
-    managed_termination_protection = true
+    managed_termination_protection = "ENABLED"
   }
 
   tags = each.value.tags
