@@ -31,7 +31,7 @@ resource "aws_lb_target_group" "this" {
   target_type = each.value.target_type
 
   dynamic "health_check" {
-    for_each = each.value.health_check ? [1] : []
+    for_each = length(try(each.value.health_check, {})) > 0 ? [1] : []
 
     content {
       enabled             = each.value.health_check.enabled
@@ -65,7 +65,7 @@ resource "aws_lb_listener" "this" {
   ssl_policy      = element(var.listeners, count.index).ssl_policy
 
   dynamic "mutual_authentication" {
-    for_each = element(var.listeners, count.index).mutual_authentication ? [1] : []
+    for_each = length(try(element(var.listeners, count.index).mutual_authentication, {})) > 0 ? [1] : []
 
     content {
       mode                             = element(var.listeners, count.index).mutual_authentication.mode
@@ -84,7 +84,7 @@ resource "aws_lb_listener" "this" {
       order            = default_action.value.order
 
       dynamic "authenticate_cognito" {
-        for_each = default_action.value.authenticate_cognito ? [1] : []
+        for_each = length(try(default_action.value.authenticate_cognito, {})) > 0 ? [1] : []
 
         content {
           user_pool_arn                       = default_action.value.authenticate_cognito.user_pool_arn
@@ -99,7 +99,7 @@ resource "aws_lb_listener" "this" {
       }
 
       dynamic "authenticate_oidc" {
-        for_each = default_action.value.authenticate_oidc ? [1] : []
+        for_each = length(try(default_action.value.authenticate_oidc, {})) > 0 ? [1] : []
 
         content {
           authorization_endpoint              = default_action.value.authenticate_oidc.authorization_endpoint
@@ -117,7 +117,7 @@ resource "aws_lb_listener" "this" {
       }
 
       dynamic "fixed_response" {
-        for_each = default_action.value.fixed_response ? [1] : []
+        for_each = length(try(default_action.value.fixed_response, {})) > 0 ? [1] : []
 
         content {
           content_type = default_action.value.fixed_response.content_type
@@ -127,7 +127,7 @@ resource "aws_lb_listener" "this" {
       }
 
       dynamic "forward" {
-        for_each = default_action.value.forward ? [1] : []
+        for_each = length(try(default_action.value.forward, {})) > 0 ? [1] : []
 
         content {
           dynamic "target_group" {
@@ -141,7 +141,7 @@ resource "aws_lb_listener" "this" {
           }
 
           dynamic "stickiness" {
-            for_each = default_action.value.forward.stickiness ? [1] : []
+            for_each = length(try(default_action.value.forward.stickiness, {})) > 0 ? [1] : []
 
             content {
               duration = default_action.value.forward.stickiness.duration
@@ -152,7 +152,7 @@ resource "aws_lb_listener" "this" {
       }
 
       dynamic "redirect" {
-        for_each = default_action.value.redirect ? [1] : []
+        for_each = length(try(default_action.value.redirect, {})) ? [1] : []
 
         content {
           status_code = default_action.value.redirect.status_code
