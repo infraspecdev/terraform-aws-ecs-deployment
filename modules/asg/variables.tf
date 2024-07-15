@@ -111,6 +111,11 @@ variable "iam_role_tags" {
   default     = {}
 }
 
+variable "iam_role_ec2_container_service_role_arn" {
+  description = "ARN of the EC2 Container Service Role for EC2"
+  type        = string
+}
+
 ################################################################################
 # IAM Instance Profile
 ################################################################################

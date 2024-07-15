@@ -89,7 +89,7 @@ resource "aws_iam_role_policy_attachment" "this" {
   count = var.create_iam_role && var.create_iam_instance_profile ? 1 : 0
 
   role       = aws_iam_role.this[0].name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+  policy_arn = var.iam_role_ec2_container_service_role_arn
 }
 
 resource "aws_iam_instance_profile" "this" {
