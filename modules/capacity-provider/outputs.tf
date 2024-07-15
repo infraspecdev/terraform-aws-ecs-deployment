@@ -1,5 +1,5 @@
 ################################################################################
-# ECS Capacity Provider Variables
+# ECS Capacity Provider
 ################################################################################
 
 output "ids" {
@@ -13,7 +13,7 @@ output "arns" {
 }
 
 ################################################################################
-# ECS Cluster Capacity Providers Variables
+# ECS Cluster Capacity Providers
 ################################################################################
 
 output "ecs_cluster_capacity_providers_id" {

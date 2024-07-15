@@ -1,3 +1,7 @@
+################################################################################
+# ECS Capacity Provider
+################################################################################
+
 resource "aws_ecs_capacity_provider" "this" {
   for_each = var.capacity_providers
 
@@ -23,6 +27,10 @@ resource "aws_ecs_capacity_provider" "this" {
 
   tags = each.value.tags
 }
+
+################################################################################
+# ECS Cluster Capacity Providers
+################################################################################
 
 resource "aws_ecs_cluster_capacity_providers" "this" {
   cluster_name = var.ecs_cluster_name

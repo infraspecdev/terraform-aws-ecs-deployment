@@ -1,3 +1,30 @@
+################################################################################
+# ECS Capacity Provider
+################################################################################
+
+variable "capacity_providers" {
+  description = "Capacity Providers to associate with the ECS Cluster"
+  type = map(object({
+    name                   = string
+    auto_scaling_group_arn = optional(string)
+    managed_scaling = optional(
+      object({
+        instance_warmup_period    = optional(number)
+        status                    = optional(string)
+        target_capacity           = optional(number)
+        minimum_scaling_step_size = optional(number)
+        maximum_scaling_step_size = optional(number)
+      })
+    )
+    tags = map(any)
+  }))
+  default = {}
+}
+
+################################################################################
+# ECS Cluster Capacity Providers
+################################################################################
+
 variable "ecs_cluster_name" {
   description = "Name of the ECS Cluster"
   type        = string
@@ -31,23 +58,4 @@ variable "default_auto_scaling_group_arn" {
     condition     = startswith(var.default_auto_scaling_group_arn, "arn:")
     error_message = "Specified default autoscaling group ARN must be a valid ARN starting with \"arn:\"."
   }
-}
-
-variable "capacity_providers" {
-  description = "Capacity Providers to associate with the ECS Cluster"
-  type = map(object({
-    name                   = string
-    auto_scaling_group_arn = optional(string)
-    managed_scaling = optional(
-      object({
-        instance_warmup_period    = optional(number)
-        status                    = optional(string)
-        target_capacity           = optional(number)
-        minimum_scaling_step_size = optional(number)
-        maximum_scaling_step_size = optional(number)
-      })
-    )
-    tags = map(any)
-  }))
-  default = {}
 }
