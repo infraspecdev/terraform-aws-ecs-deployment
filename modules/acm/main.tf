@@ -11,7 +11,7 @@ resource "aws_acm_certificate" "amazon_issued" {
   key_algorithm             = each.value.key_algorithm
 
   dynamic "options" {
-    for_each = length(try(each.value.options, {})) > 0 ? [1] : []
+    for_each = (try(each.value.options, null) != null && length(try(each.value.options, {})) > 0) ? [1] : []
 
     content {
       certificate_transparency_logging_preference = each.value.options.certificate_transparency_logging_preference
@@ -19,7 +19,7 @@ resource "aws_acm_certificate" "amazon_issued" {
   }
 
   dynamic "validation_option" {
-    for_each = length(try(each.value.validation_option, {})) > 0 ? [1] : []
+    for_each = (try(each.value.validation_option, null) != null && length(try(each.value.validation_option, {})) > 0) ? [1] : []
 
     content {
       domain_name       = each.value.validation_option.domain_name

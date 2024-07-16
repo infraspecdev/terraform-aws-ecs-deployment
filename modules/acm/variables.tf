@@ -7,10 +7,10 @@ variable "amazon_issued_certificates" {
   type = map(object({
     domain_name               = string
     subject_alternative_names = optional(list(string), [])
-    validation_method         = optional(string)
-    key_algorithm             = optional(string)
+    validation_method         = optional(string, null)
+    key_algorithm             = optional(string, null)
     options = optional(object({
-      certificate_transparency_logging_preference = optional(string)
+      certificate_transparency_logging_preference = optional(string, null)
     }))
     validation_option = optional(object({
       domain_name       = string
@@ -26,7 +26,7 @@ variable "imported_certificates" {
   type = map(object({
     private_key       = string
     certificate_body  = string
-    certificate_chain = optional(string)
+    certificate_chain = optional(string, null)
     tags              = optional(map(any), {})
   }))
   default = {}
@@ -37,7 +37,7 @@ variable "private_ca_issued_certificates" {
   type = map(object({
     certificate_authority_arn = string
     domain_name               = string
-    early_renewal_duration    = optional(string)
+    early_renewal_duration    = optional(string, null)
     tags                      = optional(map(any), {})
   }))
   default = {}
