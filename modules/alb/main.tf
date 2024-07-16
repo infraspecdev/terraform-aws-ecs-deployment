@@ -80,7 +80,7 @@ resource "aws_lb_listener" "this" {
 
     content {
       type             = default_action.value.type
-      target_group_arn = aws_lb_target_group.this[default_action.value.target_group]
+      target_group_arn = aws_lb_target_group.this[default_action.value.target_group].arn
       order            = default_action.value.order
 
       dynamic "authenticate_cognito" {
@@ -152,7 +152,7 @@ resource "aws_lb_listener" "this" {
       }
 
       dynamic "redirect" {
-        for_each = length(try(default_action.value.redirect, {})) ? [1] : []
+        for_each = length(try(default_action.value.redirect, {})) > 0 ? [1] : []
 
         content {
           status_code = default_action.value.redirect.status_code
