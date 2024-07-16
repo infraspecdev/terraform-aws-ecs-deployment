@@ -11,7 +11,7 @@ resource "aws_ecs_capacity_provider" "this" {
     auto_scaling_group_arn = coalesce(each.value.auto_scaling_group_arn, var.default_auto_scaling_group_arn)
 
     dynamic "managed_scaling" {
-      for_each = length(try(each.value.managed_scaling, {})) > 0 ? [1] : []
+      for_each = (try(each.value.managed_scaling, null) != null && length(try(each.value.managed_scaling, {})) > 0) ? [1] : []
 
       content {
         instance_warmup_period    = each.value.managed_scaling.instance_warmup_period
