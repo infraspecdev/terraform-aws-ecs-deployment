@@ -6,9 +6,10 @@ resource "aws_autoscaling_group" "this" {
   name                = var.name
   vpc_zone_identifier = var.vpc_zone_identifier
 
-  desired_capacity = var.desired_capacity
-  min_size         = var.min_size
-  max_size         = var.max_size
+  desired_capacity      = var.desired_capacity
+  min_size              = var.min_size
+  max_size              = var.max_size
+  protect_from_scale_in = try(var.protect_from_scale_in, null)
 
   health_check_type = "EC2"
 

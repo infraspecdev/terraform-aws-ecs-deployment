@@ -13,6 +13,12 @@ variable "vpc_zone_identifier" {
   }
 }
 
+variable "protect_from_scale_in" {
+  description = "Whether to enable protection for Autoscaling group from scaling in instances"
+  type        = bool
+  default     = false
+}
+
 variable "desired_capacity" {
   description = "Desired capacity for the Autoscaling group"
   type        = number

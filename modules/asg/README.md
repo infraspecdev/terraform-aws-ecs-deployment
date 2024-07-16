@@ -47,6 +47,7 @@ No modules.
 | <a name="input_max_size"></a> [max\_size](#input\_max\_size) | Max. size for the Autoscaling group | `number` | n/a | yes |
 | <a name="input_min_size"></a> [min\_size](#input\_min\_size) | Min. size for the Autoscaling group | `number` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | Name of the Autoscaling Group | `string` | n/a | yes |
+| <a name="input_protect_from_scale_in"></a> [protect\_from\_scale\_in](#input\_protect\_from\_scale\_in) | Whether to enable protection for Autoscaling group from scaling in instances | `bool` | `false` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Resources Tags for Autoscaling group | `map(any)` | `{}` | no |
 | <a name="input_vpc_zone_identifier"></a> [vpc\_zone\_identifier](#input\_vpc\_zone\_identifier) | Identifiers of the VPC Subnets | `list(string)` | n/a | yes |
 
