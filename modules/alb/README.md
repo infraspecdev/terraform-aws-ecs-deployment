@@ -43,9 +43,11 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_arn"></a> [arn](#output\_arn) | ARN of the Load Balancer |
+| <a name="output_dns_name"></a> [dns\_name](#output\_dns\_name) | DNS name of the Load Balancer |
 | <a name="output_id"></a> [id](#output\_id) | Identifier of the Load Balancer |
 | <a name="output_listeners_arns"></a> [listeners\_arns](#output\_listeners\_arns) | ARNs of the Listeners |
 | <a name="output_listeners_ids"></a> [listeners\_ids](#output\_listeners\_ids) | Identifiers of the Listeners |
 | <a name="output_target_groups_arns"></a> [target\_groups\_arns](#output\_target\_groups\_arns) | ARNs of the Target Groups |
 | <a name="output_target_groups_ids"></a> [target\_groups\_ids](#output\_target\_groups\_ids) | Identifiers of the Target Groups |
+| <a name="output_zone_id"></a> [zone\_id](#output\_zone\_id) | Canonical hosted zone ID of the Load Balancer (to be used in a Route 53 Alias record) |
 <!-- END_TF_DOCS -->

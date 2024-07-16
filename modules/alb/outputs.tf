@@ -12,6 +12,16 @@ output "arn" {
   value       = aws_lb.this.arn
 }
 
+output "dns_name" {
+  description = "DNS name of the Load Balancer"
+  value       = aws_lb.this.dns_name
+}
+
+output "zone_id" {
+  description = "Canonical hosted zone ID of the Load Balancer (to be used in a Route 53 Alias record)"
+  value       = aws_lb.this.zone_id
+}
+
 ################################################################################
 # Load Balancer Target Group
 ################################################################################
