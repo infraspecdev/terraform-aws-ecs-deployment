@@ -37,7 +37,5 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_ecs_service_arn"></a> [ecs\_service\_arn](#output\_ecs\_service\_arn) | ARN of the ECS Service |
-| <a name="output_ecs_service_id"></a> [ecs\_service\_id](#output\_ecs\_service\_id) | Identifier of the ECS Service |
 | <a name="output_ecs_task_definition_arn"></a> [ecs\_task\_definition\_arn](#output\_ecs\_task\_definition\_arn) | ARN of the ECS Task Definition |
-| <a name="output_ecs_task_definition_id"></a> [ecs\_task\_definition\_id](#output\_ecs\_task\_definition\_id) | Identifier of the ECS Task Definition |
 <!-- END_TF_DOCS -->
