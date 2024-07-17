@@ -55,7 +55,7 @@ variable "target_groups" {
     port         = optional(number)
     protocol     = optional(string)
     target_type  = optional(string)
-    health_check = optional(any, {})
+    health_check = optional(any, null)
     tags         = optional(map(any), {})
   }))
   default = {}
@@ -71,16 +71,16 @@ variable "listeners" {
     default_action = list(object({
       type                 = string
       target_group         = string
-      authenticate_cognito = optional(any, {})
-      authenticate_oidc    = optional(any, {})
-      fixed_response       = optional(any, {})
-      forward              = optional(any, {})
+      authenticate_cognito = optional(any, null)
+      authenticate_oidc    = optional(any, null)
+      fixed_response       = optional(any, null)
+      forward              = optional(any, null)
       order                = optional(number)
-      redirect             = optional(any, {})
+      redirect             = optional(any, null)
     }))
     alpn_policy           = optional(string)
     certificate_arn       = optional(string)
-    mutual_authentication = optional(any, {})
+    mutual_authentication = optional(any, null)
     port                  = optional(number)
     protocol              = optional(string)
     ssl_policy            = optional(string)
