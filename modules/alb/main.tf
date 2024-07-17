@@ -31,7 +31,7 @@ resource "aws_lb_target_group" "this" {
   target_type = each.value.target_type
 
   dynamic "health_check" {
-    for_each = (try(each.value.health_check, null) != null && length(try(each.value.health_check, {})) > 0) ? [1] : []
+    for_each = length(each.value.health_check != null ? each.value.health_check : {}) > 0 ? [1] : []
 
     content {
       enabled             = try(each.value.health_check.enabled, null)
@@ -65,7 +65,7 @@ resource "aws_lb_listener" "this" {
   ssl_policy      = element(var.listeners, count.index).ssl_policy
 
   dynamic "mutual_authentication" {
-    for_each = (try(element(var.listeners, count.index).mutual_authentication, null) != null && length(try(element(var.listeners, count.index).mutual_authentication, {})) > 0) ? [1] : []
+    for_each = length(element(var.listeners, count.index).mutual_authentication != null ? element(var.listeners, count.index).mutual_authentication : {}) > 0 ? [1] : []
 
     content {
       mode                             = element(var.listeners, count.index).mutual_authentication.mode
@@ -84,7 +84,7 @@ resource "aws_lb_listener" "this" {
       order            = default_action.value.order
 
       dynamic "authenticate_cognito" {
-        for_each = (try(default_action.value.authenticate_cognito, null) != null && length(try(default_action.value.authenticate_cognito, {})) > 0) ? [1] : []
+        for_each = length(default_action.value.authenticate_cognito != null ? default_action.value.authenticate_cognito : {}) > 0 ? [1] : []
 
         content {
           user_pool_arn                       = default_action.value.authenticate_cognito.user_pool_arn
@@ -99,7 +99,7 @@ resource "aws_lb_listener" "this" {
       }
 
       dynamic "authenticate_oidc" {
-        for_each = (try(default_action.value.authenticate_oidc, null) != null && length(try(default_action.value.authenticate_oidc, {})) > 0) ? [1] : []
+        for_each = length(default_action.value.authenticate_oidc != null ? default_action.value.authenticate_oidc : {}) > 0 ? [1] : []
 
         content {
           authorization_endpoint              = default_action.value.authenticate_oidc.authorization_endpoint
@@ -117,7 +117,7 @@ resource "aws_lb_listener" "this" {
       }
 
       dynamic "fixed_response" {
-        for_each = (try(default_action.value.fixed_response, null) != null && length(try(default_action.value.fixed_response, {})) > 0) ? [1] : []
+        for_each = length(default_action.value.fixed_response != null ? default_action.value.fixed_response : {}) > 0 ? [1] : []
 
         content {
           content_type = default_action.value.fixed_response.content_type
@@ -127,7 +127,7 @@ resource "aws_lb_listener" "this" {
       }
 
       dynamic "forward" {
-        for_each = (try(default_action.value.forward, null) != null && length(try(default_action.value.forward, {})) > 0) ? [1] : []
+        for_each = length(default_action.value.forward != null ? default_action.value.forward : {}) > 0 ? [1] : []
 
         content {
           dynamic "target_group" {
@@ -141,7 +141,7 @@ resource "aws_lb_listener" "this" {
           }
 
           dynamic "stickiness" {
-            for_each = (try(default_action.value.forward.stickiness, null) != null && length(try(default_action.value.forward.stickiness, {})) > 0) ? [1] : []
+            for_each = length(default_action.value.forward.stickiness != null ? default_action.value.forward.stickiness : {}) > 0 ? [1] : []
 
             content {
               duration = default_action.value.forward.stickiness.duration
@@ -152,7 +152,7 @@ resource "aws_lb_listener" "this" {
       }
 
       dynamic "redirect" {
-        for_each = (try(default_action.value.redirect, null) != null && length(try(default_action.value.redirect, {})) > 0) ? [1] : []
+        for_each = length(default_action.value.redirect != null ? default_action.value.redirect : {}) > 0 ? [1] : []
 
         content {
           status_code = default_action.value.redirect.status_code
