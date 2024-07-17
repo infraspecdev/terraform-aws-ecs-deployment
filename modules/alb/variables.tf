@@ -31,6 +31,12 @@ variable "preserve_host_header" {
   default     = false
 }
 
+variable "enable_deletion_protection" {
+  description = "If true, deletion of the load balancer will be disabled via the AWS API. This will prevent Terraform from deleting the load balancer"
+  type        = bool
+  default     = false
+}
+
 variable "tags" {
   description = "Resource Tags for the ALB"
   type        = map(any)

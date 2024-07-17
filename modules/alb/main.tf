@@ -12,7 +12,7 @@ resource "aws_lb" "this" {
 
   preserve_host_header = var.preserve_host_header
 
-  enable_deletion_protection = false
+  enable_deletion_protection = var.enable_deletion_protection
 
   tags = var.tags
 }

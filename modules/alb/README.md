@@ -29,6 +29,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_enable_deletion_protection"></a> [enable\_deletion\_protection](#input\_enable\_deletion\_protection) | If true, deletion of the load balancer will be disabled via the AWS API. This will prevent Terraform from deleting the load balancer | `bool` | `false` | no |
 | <a name="input_internal"></a> [internal](#input\_internal) | Either the ALB is internal or internet-facing | `bool` | `false` | no |
 | <a name="input_listeners"></a> [listeners](#input\_listeners) | Listeners to forward ALB ingress to desired Target Groups | <pre>map(object({<br>    default_action = list(object({<br>      type                 = string<br>      target_group         = string<br>      authenticate_cognito = optional(any, {})<br>      authenticate_oidc    = optional(any, {})<br>      fixed_response       = optional(any, {})<br>      forward              = optional(any, {})<br>      order                = optional(number)<br>      redirect             = optional(any, {})<br>    }))<br>    alpn_policy           = optional(string)<br>    certificate_arn       = optional(string)<br>    mutual_authentication = optional(any, {})<br>    port                  = optional(number)<br>    protocol              = optional(string)<br>    ssl_policy            = optional(string)<br>    tags                  = optional(map(any), {})<br>  }))</pre> | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | Name of the ALB | `string` | `""` | no |
