@@ -54,28 +54,28 @@ resource "aws_lb_target_group" "this" {
 ################################################################################
 
 resource "aws_lb_listener" "this" {
-  count = length(var.listeners)
+  for_each = var.listeners
 
   load_balancer_arn = aws_lb.this.arn
 
-  alpn_policy     = element(var.listeners, count.index).alpn_policy
-  certificate_arn = element(var.listeners, count.index).certificate_arn
-  port            = element(var.listeners, count.index).port
-  protocol        = element(var.listeners, count.index).protocol
-  ssl_policy      = element(var.listeners, count.index).ssl_policy
+  alpn_policy     = each.value.alpn_policy
+  certificate_arn = each.value.certificate_arn
+  port            = each.value.port
+  protocol        = each.value.protocol
+  ssl_policy      = each.value.ssl_policy
 
   dynamic "mutual_authentication" {
-    for_each = length(element(var.listeners, count.index).mutual_authentication != null ? element(var.listeners, count.index).mutual_authentication : {}) > 0 ? [1] : []
+    for_each = length(each.value.mutual_authentication != null ? each.value.mutual_authentication : {}) > 0 ? [1] : []
 
     content {
-      mode                             = element(var.listeners, count.index).mutual_authentication.mode
-      trust_store_arn                  = element(var.listeners, count.index).mutual_authentication.trust_store_arn
-      ignore_client_certificate_expiry = try(element(var.listeners, count.index).mutual_authentication.ignore_client_certificate_expiry, null)
+      mode                             = each.value.mutual_authentication.mode
+      trust_store_arn                  = each.value.mutual_authentication.trust_store_arn
+      ignore_client_certificate_expiry = try(each.value.mutual_authentication.ignore_client_certificate_expiry, null)
     }
   }
 
   dynamic "default_action" {
-    for_each = element(var.listeners, count.index).default_action
+    for_each = each.value.default_action
     iterator = default_action
 
     content {
@@ -166,5 +166,5 @@ resource "aws_lb_listener" "this" {
     }
   }
 
-  tags = element(var.listeners, count.index).tags
+  tags = each.value.tags
 }

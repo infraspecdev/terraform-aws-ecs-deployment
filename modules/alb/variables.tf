@@ -61,7 +61,7 @@ variable "target_groups" {
 
 variable "listeners" {
   description = "Listeners to forward ALB ingress to desired Target Groups"
-  type = list(object({
+  type = map(object({
     default_action = list(object({
       type                 = string
       target_group         = string
