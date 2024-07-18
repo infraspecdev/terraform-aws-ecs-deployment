@@ -19,20 +19,22 @@ resource "aws_autoscaling_group" "this" {
 
   dynamic "tag" {
     for_each = var.instances_tags
+    iterator = tag
 
     content {
-      key                 = each.key
-      value               = each.value
+      key                 = tag.key
+      value               = tag.value
       propagate_at_launch = true
     }
   }
 
   dynamic "tag" {
     for_each = var.tags
+    iterator = tag
 
     content {
-      key                 = each.key
-      value               = each.value
+      key                 = tag.key
+      value               = tag.value
       propagate_at_launch = false
     }
   }
