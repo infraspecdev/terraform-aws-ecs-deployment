@@ -65,7 +65,7 @@ resource "aws_launch_template" "this" {
 ################################################################################
 
 data "aws_iam_policy_document" "this" {
-  count = var.create_iam_role && var.create_iam_instance_profile ? 1 : 0
+  count = var.create_iam_role ? 1 : 0
 
   statement {
     actions = ["sts:AssumeRole"]
@@ -78,7 +78,7 @@ data "aws_iam_policy_document" "this" {
 }
 
 resource "aws_iam_role" "this" {
-  count = var.create_iam_role && var.create_iam_instance_profile ? 1 : 0
+  count = var.create_iam_role ? 1 : 0
 
   name               = var.iam_role_name
   assume_role_policy = data.aws_iam_policy_document.this[0].json
@@ -87,7 +87,7 @@ resource "aws_iam_role" "this" {
 }
 
 resource "aws_iam_role_policy_attachment" "this" {
-  count = var.create_iam_role && var.create_iam_instance_profile ? 1 : 0
+  count = var.create_iam_role ? 1 : 0
 
   role       = aws_iam_role.this[0].name
   policy_arn = var.iam_role_ec2_container_service_role_arn
@@ -97,7 +97,7 @@ resource "aws_iam_instance_profile" "this" {
   count = var.create_iam_instance_profile ? 1 : 0
 
   name = var.iam_instance_profile_name
-  role = aws_iam_role.this[0].name
+  role = var.create_iam_role ? aws_iam_role.this[0].name : var.iam_role_name
 
   tags = var.iam_instance_profile_tags
 }
