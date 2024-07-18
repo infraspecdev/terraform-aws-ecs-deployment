@@ -76,6 +76,7 @@ variable "launch_template" {
     user_data              = optional(string, "")
     tags                   = optional(map(any), {})
   })
+  default = {}
 }
 
 variable "create_launch_template" {
