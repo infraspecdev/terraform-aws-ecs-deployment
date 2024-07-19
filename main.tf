@@ -356,11 +356,7 @@ module "alb" {
     for k, v in try(var.load_balancer.listeners, {}) :
     k => merge(
       {
-        certificate     = lookup(v, "certificate", null) != null ? v.certificate : null,
-        certificate_arn = lookup(v, "certificate_arn", null) != null ? v.certificate_arn : null,
-      },
-      {
-        certificate_arn = lookup(local.acm_certificates_arns, v.certificate, null) != null ? local.acm_certificates_arns[v.certificate] : v.certificate_arn
+        certificate_arn = lookup(local.acm_certificates_arns, try(v.certificate, ""), null) != null ? local.acm_certificates_arns[try(v.certificate, null)] : v.certificate_arn
       },
       v
     )
