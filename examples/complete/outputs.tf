@@ -18,17 +18,17 @@ output "task_definition_arn" {
 
 output "ecs_capacity_provider_id" {
   description = "Identifier of the ECS Capacity Provider"
-  value       = module.capacity_provider.ids[0]
+  value       = module.ecs_deployment.capacity_provider_ids[0]
 }
 
 output "ecs_capacity_provider_arn" {
   description = "ARN of the ECS Capacity Provider"
-  value       = module.capacity_provider.arns[0]
+  value       = module.ecs_deployment.capacity_provider_arns[0]
 }
 
 output "ecs_cluster_capacity_providers_id" {
   description = "Identifier of the ECS Cluster Capacity Providers"
-  value       = module.capacity_provider.ecs_cluster_capacity_providers_id
+  value       = module.ecs_deployment.capacity_provider_ecs_cluster_capacity_providers_id
 }
 
 ################################################################################
@@ -66,22 +66,22 @@ output "vpc_public_subnets_arns" {
 
 output "asg_id" {
   description = "Identifier of the Autoscaling group"
-  value       = module.asg.id
+  value       = module.ecs_deployment.asg_id
 }
 
 output "asg_arn" {
   description = "ARN of the Autoscaling group"
-  value       = module.asg.arn
+  value       = module.ecs_deployment.asg_arn
 }
 
 output "launch_template_id" {
   description = "Identifier of the Launch Template"
-  value       = module.asg.launch_template_id
+  value       = module.ecs_deployment.asg_launch_template_id
 }
 
 output "launch_template_arn" {
   description = "ARN of the Launch Template"
-  value       = module.asg.launch_template_arn
+  value       = module.ecs_deployment.asg_launch_template_arn
 }
 
 ################################################################################
@@ -90,17 +90,17 @@ output "launch_template_arn" {
 
 output "iam_instance_role_id" {
   description = "Identifier of the IAM Instance Role"
-  value       = module.asg.iam_role_id
+  value       = module.ecs_deployment.asg_iam_role_id
 }
 
 output "iam_instance_profile_id" {
   description = "Identifier of the IAM Instance Profile"
-  value       = module.asg.iam_instance_profile_id
+  value       = module.ecs_deployment.asg_iam_instance_profile_id
 }
 
 output "iam_instance_profile_arn" {
   description = "ARN of the IAM Instance Profile"
-  value       = module.asg.iam_instance_profile_arn
+  value       = module.ecs_deployment.asg_iam_instance_profile_arn
 }
 
 ################################################################################
@@ -109,32 +109,32 @@ output "iam_instance_profile_arn" {
 
 output "alb_id" {
   description = "Identifier of the Application Load Balancer for Nginx ECS Service"
-  value       = module.alb.id
+  value       = module.ecs_deployment.alb_id
 }
 
 output "alb_arn" {
   description = "ARN of the Application Load Balancer for Nginx ECS Service"
-  value       = module.alb.arn
+  value       = module.ecs_deployment.alb_arn
 }
 
 output "target_group_id" {
   description = "Identifier of the Target Group for Nginx instances"
-  value       = module.alb.target_groups_ids["this"]
+  value       = module.ecs_deployment.alb_target_groups_ids["this"]
 }
 
 output "target_group_arn" {
   description = "ARN of the Target Group for Nginx instances"
-  value       = module.alb.target_groups_arns["this"]
+  value       = module.ecs_deployment.alb_target_groups_arns["this"]
 }
 
 output "listener_id" {
   description = "Identifier of the ALB Listener forwarding to Nginx instances"
-  value       = module.alb.listeners_ids["this"]
+  value       = module.ecs_deployment.alb_listeners_ids["this"]
 }
 
 output "listener_arn" {
   description = "ARN of the ALB Listener forwarding to Nginx instances"
-  value       = module.alb.listeners_arns["this"]
+  value       = module.ecs_deployment.alb_listeners_arns["this"]
 }
 
 ################################################################################
@@ -143,7 +143,7 @@ output "listener_arn" {
 
 output "acm_amazon_issued_certificate_arn" {
   description = "ARN of the ACM Amazon-issued certificate for the base domain"
-  value       = module.acm.amazon_issued_acm_certificates_arns["base_domain"]
+  value       = module.ecs_deployment.amazon_issued_acm_certificates_arns["base_domain"]
 }
 
 ################################################################################

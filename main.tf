@@ -1,14 +1,26 @@
+locals {
+  # IAM Instance Profile
+  iam_role_ec2_container_service_role_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+
+  # ACM
+  acm_certificates_arns = merge(
+    module.acm[0].amazon_issued_acm_certificates_arns,
+    module.acm[0].imported_acm_certificates_arns,
+    module.acm[0].private_ca_issued_acm_certificates_arns
+  )
+}
+
 ################################################################################
 # ECS Service
 ################################################################################
 
 resource "aws_ecs_service" "this" {
   name    = var.service.name
-  cluster = var.service.cluster
+  cluster = var.cluster_name
 
   deployment_maximum_percent         = try(var.service.deployment_maximum_percent, null)
   deployment_minimum_healthy_percent = try(var.service.deployment_minimum_healthy_percent, null)
-  desired_count                      = var.service.desired_count
+  desired_count                      = try(var.service.desired_count, null)
   enable_ecs_managed_tags            = try(var.service.enable_ecs_managed_tags, true)
   enable_execute_command             = try(var.service.enable_execute_command, null)
   force_new_deployment               = try(var.service.force_new_deployment, null)
@@ -26,10 +38,14 @@ resource "aws_ecs_service" "this" {
     iterator = load_balancer
 
     content {
-      elb_name         = try(load_balancer.value.elb_name, null)
-      target_group_arn = try(load_balancer.value.target_group_arn, null)
-      container_name   = load_balancer.value.container_name
-      container_port   = load_balancer.value.container_port
+      elb_name = try(load_balancer.value.elb_name, null)
+      target_group_arn = lookup(
+        module.alb[0].target_groups_arns,
+        try(load_balancer.value.target_group, null),
+        null
+      ) != null ? module.alb[0].target_groups_arns[try(load_balancer.value.target_group, null)] : try(load_balancer.value.target_group_arn, null)
+      container_name = load_balancer.value.container_name
+      container_port = load_balancer.value.container_port
     }
   }
 
@@ -142,7 +158,7 @@ resource "aws_ecs_service" "this" {
 
 resource "aws_ecs_task_definition" "this" {
   container_definitions = jsonencode(var.task_definition.container_definitions)
-  family                = var.task_definition.family
+  family                = try(var.task_definition.family, null)
 
   cpu                      = try(var.task_definition.cpu, null)
   execution_role_arn       = try(var.task_definition.execution_role_arn, null)
@@ -260,4 +276,109 @@ resource "aws_ecs_task_definition" "this" {
   }
 
   tags = try(var.task_definition.tags, {})
+}
+
+################################################################################
+# Autoscaling Group Sub-module
+################################################################################
+
+module "asg" {
+  source = "./modules/asg"
+
+  count = var.create_autoscaling_group ? 1 : 0
+
+  name                = try(var.autoscaling_group.name, null)
+  vpc_zone_identifier = try(var.autoscaling_group.vpc_zone_identifier, [])
+
+  desired_capacity      = try(var.autoscaling_group.desired_capacity, null)
+  min_size              = try(var.autoscaling_group.min_size, null)
+  max_size              = try(var.autoscaling_group.max_size, null)
+  protect_from_scale_in = try(var.autoscaling_group.protect_from_scale_in, null)
+
+  # Launch Template
+  create_launch_template = try(var.autoscaling_group.create_launch_template, true)
+  launch_template_id     = try(var.autoscaling_group.launch_template_id, null)
+  launch_template        = try(var.autoscaling_group.launch_template, {})
+
+  # IAM Instance Profile
+  create_iam_role                         = try(var.autoscaling_group.create_iam_role, true)
+  iam_role_name                           = try(var.autoscaling_group.iam_role_name, null)
+  iam_role_tags                           = try(var.autoscaling_group.iam_role_tags, {})
+  iam_role_ec2_container_service_role_arn = try(var.autoscaling_group.iam_role_ec2_container_service_role_arn, local.iam_role_ec2_container_service_role_arn)
+  create_iam_instance_profile             = try(var.autoscaling_group.create_iam_instance_profile, true)
+  iam_instance_profile_name               = try(var.autoscaling_group.iam_instance_profile_name, null)
+  iam_instance_profile_tags               = try(var.autoscaling_group.iam_instance_profile_tags, {})
+
+  instances_tags = try(var.autoscaling_group.instances_tags, {})
+  tags           = try(var.autoscaling_group.tags, {})
+}
+
+################################################################################
+# Capacity Provider Sub-module
+################################################################################
+
+module "capacity_provider" {
+  source = "./modules/capacity-provider"
+
+  count = var.create_capacity_provider ? 1 : 0
+
+  ecs_cluster_name               = var.cluster_name
+  default_auto_scaling_group_arn = var.create_autoscaling_group ? module.asg[0].arn : var.capacity_provider_default_auto_scaling_group_arn
+
+  capacity_providers                   = var.capacity_providers
+  default_capacity_provider_strategies = var.default_capacity_providers_strategies
+}
+
+################################################################################
+# Application Load Balancer Sub-module
+################################################################################
+
+module "alb" {
+  source = "./modules/alb"
+
+  count = var.create_alb ? 1 : 0
+
+  name                       = try(var.load_balancer.name, null)
+  internal                   = try(var.load_balancer.internal, null)
+  subnets_ids                = try(var.load_balancer.subnets_ids, [])
+  security_groups_ids        = try(var.load_balancer.security_groups_ids, [])
+  preserve_host_header       = try(var.load_balancer.preserve_host_header, null)
+  enable_deletion_protection = try(var.load_balancer.enable_deletion_protection, null)
+
+  target_groups = {
+    for k, v in try(var.load_balancer.target_groups, {}) :
+    k => merge({
+      vpc_id = var.vpc_id
+    }, v)
+  }
+
+  listeners = {
+    for k, v in try(var.load_balancer.listeners, {}) :
+    k => merge(
+      {
+        certificate     = lookup(v, "certificate", null) != null ? v.certificate : null,
+        certificate_arn = lookup(v, "certificate_arn", null) != null ? v.certificate_arn : null,
+      },
+      {
+        certificate_arn = lookup(local.acm_certificates_arns, v.certificate, null) != null ? local.acm_certificates_arns[v.certificate] : v.certificate_arn
+      },
+      v
+    )
+  }
+
+  tags = try(var.load_balancer.tags, {})
+}
+
+################################################################################
+# Amazon Certificates Manager Sub-module
+################################################################################
+
+module "acm" {
+  source = "./modules/acm"
+
+  count = var.create_acm ? 1 : 0
+
+  amazon_issued_certificates     = try(var.acm_amazon_issued_certificates, {})
+  imported_certificates          = try(var.acm_imported_certificates, {})
+  private_ca_issued_certificates = try(var.acm_private_ca_issued_certificates, {})
 }
