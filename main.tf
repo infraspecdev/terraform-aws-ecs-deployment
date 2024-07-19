@@ -3,11 +3,11 @@ locals {
   iam_role_ec2_container_service_role_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 
   # ACM
-  acm_certificates_arns = merge(
-    module.acm[0].amazon_issued_acm_certificates_arns,
-    module.acm[0].imported_acm_certificates_arns,
-    module.acm[0].private_ca_issued_acm_certificates_arns
-  )
+  acm_certificates_arns = var.create_acm ? merge(
+    try(module.acm[0].amazon_issued_acm_certificates_arns, {}),
+    try(module.acm[0].imported_acm_certificates_arns, {}),
+    try(module.acm[0].private_ca_issued_acm_certificates_arns, {})
+  ) : {}
 }
 
 ################################################################################
