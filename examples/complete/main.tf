@@ -73,9 +73,9 @@ module "ecs_deployment" {
 
     load_balancer = [
       {
-        target_group_arn = "my-target-group"
-        container_name   = "nginx"
-        container_port   = 80
+        target_group   = "my-target-group"
+        container_name = "nginx"
+        container_port = 80
       }
     ]
   }
@@ -129,7 +129,9 @@ module "ecs_deployment" {
         EOT
     }
 
-    iam_role_ec2_container_service_role_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+    iam_role_policy_attachments = [
+      "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+    ]
   }
 
   # Capacity Provider
