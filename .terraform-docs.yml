@@ -17,6 +17,7 @@ output:
     <!-- BEGIN_TF_DOCS -->
     {{ .Content }}
     <!-- END_TF_DOCS -->
+    {{- printf "\n" -}}
 
 sort:
   enabled: true
