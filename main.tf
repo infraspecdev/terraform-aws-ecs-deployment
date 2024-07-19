@@ -150,6 +150,8 @@ resource "aws_ecs_service" "this" {
   }
 
   tags = try(var.service.tags, {})
+
+  depends_on = [module.asg]
 }
 
 ################################################################################
