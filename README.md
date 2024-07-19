@@ -1,6 +1,8 @@
 <!-- BEGIN_TF_DOCS -->
 # terraform-aws-ecs-deployment
 
+Terraform module to deploy production-ready applications and services on an existing ECS infra.
+
 ## Requirements
 
 | Name | Version |
