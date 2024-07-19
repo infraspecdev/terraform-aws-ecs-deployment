@@ -89,10 +89,10 @@ resource "aws_iam_role" "this" {
 }
 
 resource "aws_iam_role_policy_attachment" "this" {
-  count = var.create_iam_role ? 1 : 0
+  count = var.create_iam_role ? length(var.iam_role_policy_attachments) : 0
 
   role       = aws_iam_role.this[0].name
-  policy_arn = var.iam_role_ec2_container_service_role_arn
+  policy_arn = element(var.iam_role_policy_attachments, count.index)
 }
 
 resource "aws_iam_instance_profile" "this" {

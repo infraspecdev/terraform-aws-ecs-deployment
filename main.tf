@@ -1,7 +1,4 @@
 locals {
-  # IAM Instance Profile
-  iam_role_ec2_container_service_role_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
-
   # ACM
   acm_certificates_arns = var.create_acm ? merge(
     try(module.acm[0].amazon_issued_acm_certificates_arns, {}),
@@ -303,13 +300,13 @@ module "asg" {
   launch_template        = try(var.autoscaling_group.launch_template, {})
 
   # IAM Instance Profile
-  create_iam_role                         = try(var.autoscaling_group.create_iam_role, true)
-  iam_role_name                           = try(var.autoscaling_group.iam_role_name, null)
-  iam_role_tags                           = try(var.autoscaling_group.iam_role_tags, {})
-  iam_role_ec2_container_service_role_arn = try(var.autoscaling_group.iam_role_ec2_container_service_role_arn, local.iam_role_ec2_container_service_role_arn)
-  create_iam_instance_profile             = try(var.autoscaling_group.create_iam_instance_profile, true)
-  iam_instance_profile_name               = try(var.autoscaling_group.iam_instance_profile_name, null)
-  iam_instance_profile_tags               = try(var.autoscaling_group.iam_instance_profile_tags, {})
+  create_iam_role             = try(var.autoscaling_group.create_iam_role, true)
+  iam_role_name               = try(var.autoscaling_group.iam_role_name, null)
+  iam_role_policy_attachments = try(var.autoscaling_group.iam_role_policy_attachments, [])
+  iam_role_tags               = try(var.autoscaling_group.iam_role_tags, {})
+  create_iam_instance_profile = try(var.autoscaling_group.create_iam_instance_profile, true)
+  iam_instance_profile_name   = try(var.autoscaling_group.iam_instance_profile_name, null)
+  iam_instance_profile_tags   = try(var.autoscaling_group.iam_instance_profile_tags, {})
 
   instances_tags = try(var.autoscaling_group.instances_tags, {})
   tags           = try(var.autoscaling_group.tags, {})
