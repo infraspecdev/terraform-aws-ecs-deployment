@@ -20,7 +20,9 @@ run "asg_attributes_match" {
     create_launch_template = false
     launch_template_id     = "lt-068f72b729example"
 
-    iam_role_ec2_container_service_role_arn = "arn:aws:iam::aws:policy/abcd/efgh"
+    iam_role_policy_attachments = [
+      "arn:aws:iam::aws:policy/abcd/efgh"
+    ]
 
     instances_tags = {
       Example = "Tag"
@@ -129,7 +131,9 @@ run "launch_template_attributes_match" {
       }
     }
 
-    iam_role_ec2_container_service_role_arn = "arn:aws:iam::aws:policy/abcd/efgh"
+    iam_role_policy_attachments = [
+      "arn:aws:iam::aws:policy/abcd/efgh"
+    ]
   }
 
   assert {
@@ -199,7 +203,9 @@ run "iam_policy_document_attributes_match" {
       }
     }
 
-    iam_role_ec2_container_service_role_arn = "arn:aws:iam::aws:policy/abcd/efgh"
+    iam_role_policy_attachments = [
+      "arn:aws:iam::aws:policy/abcd/efgh"
+    ]
   }
 
   assert {
@@ -245,9 +251,11 @@ run "does_not_create_iam_role" {
       }
     }
 
-    create_iam_role                         = false
-    iam_role_name                           = "example-iam-role-name"
-    iam_role_ec2_container_service_role_arn = "arn:aws:iam::aws:policy/abcd/efgh"
+    create_iam_role = false
+    iam_role_name   = "example-iam-role-name"
+    iam_role_policy_attachments = [
+      "arn:aws:iam::aws:policy/abcd/efgh"
+    ]
   }
 
   assert {
@@ -298,7 +306,9 @@ run "iam_role_attributes_match" {
     iam_role_tags = {
       ExampleIAM = "RoleTags"
     }
-    iam_role_ec2_container_service_role_arn = "arn:aws:iam::aws:policy/abcd/efgh"
+    iam_role_policy_attachments = [
+      "arn:aws:iam::aws:policy/abcd/efgh"
+    ]
   }
 
   assert {
@@ -354,7 +364,9 @@ run "iam_role_policy_attachment_attributes_match" {
     iam_role_tags = {
       ExampleIAM = "RoleTags"
     }
-    iam_role_ec2_container_service_role_arn = "arn:aws:iam::aws:policy/abcd/efgh"
+    iam_role_policy_attachments = [
+      "arn:aws:iam::aws:policy/abcd/efgh"
+    ]
   }
 
   assert {
@@ -368,7 +380,7 @@ run "iam_role_policy_attachment_attributes_match" {
   }
 
   assert {
-    condition     = aws_iam_role_policy_attachment.this[0].policy_arn == var.iam_role_ec2_container_service_role_arn
+    condition     = aws_iam_role_policy_attachment.this[0].policy_arn == var.iam_role_policy_attachments[0]
     error_message = "Policy ARN mismatch"
   }
 }
@@ -405,7 +417,9 @@ run "does_not_create_iam_instance_profile" {
     iam_role_tags = {
       ExampleIAM = "RoleTags"
     }
-    iam_role_ec2_container_service_role_arn = "arn:aws:iam::aws:policy/abcd/efgh"
+    iam_role_policy_attachments = [
+      "arn:aws:iam::aws:policy/abcd/efgh"
+    ]
 
     create_iam_instance_profile = false
     iam_instance_profile_name   = "example-iam-instance-profile-name"
@@ -449,7 +463,9 @@ run "iam_instance_profile_attributes_match" {
     iam_role_tags = {
       ExampleIAM = "RoleTags"
     }
-    iam_role_ec2_container_service_role_arn = "arn:aws:iam::aws:policy/abcd/efgh"
+    iam_role_policy_attachments = [
+      "arn:aws:iam::aws:policy/abcd/efgh"
+    ]
 
     create_iam_instance_profile = true
     iam_instance_profile_name   = "example-iam-instance-profile-name"
