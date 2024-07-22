@@ -38,7 +38,7 @@ resource "aws_ecs_service" "this" {
       elb_name = try(load_balancer.value.elb_name, null)
       target_group_arn = lookup(
         try(module.alb[0].target_groups_arns, {}),
-        try(load_balancer.value.target_group, null),
+        try(load_balancer.value.target_group, ""),
         null
       ) != null ? try(module.alb[0].target_groups_arns, {})[try(load_balancer.value.target_group, null)] : try(load_balancer.value.target_group_arn, null)
       container_name = load_balancer.value.container_name
