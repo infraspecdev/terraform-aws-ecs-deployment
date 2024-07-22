@@ -37,10 +37,10 @@ resource "aws_ecs_service" "this" {
     content {
       elb_name = try(load_balancer.value.elb_name, null)
       target_group_arn = lookup(
-        module.alb[0].target_groups_arns,
+        try(module.alb[0].target_groups_arns, {}),
         try(load_balancer.value.target_group, null),
         null
-      ) != null ? module.alb[0].target_groups_arns[try(load_balancer.value.target_group, null)] : try(load_balancer.value.target_group_arn, null)
+      ) != null ? try(module.alb[0].target_groups_arns, {})[try(load_balancer.value.target_group, null)] : try(load_balancer.value.target_group_arn, null)
       container_name = load_balancer.value.container_name
       container_port = load_balancer.value.container_port
     }
@@ -322,7 +322,7 @@ module "capacity_provider" {
   count = var.create_capacity_provider ? 1 : 0
 
   ecs_cluster_name               = var.cluster_name
-  default_auto_scaling_group_arn = var.create_autoscaling_group ? module.asg[0].arn : var.capacity_provider_default_auto_scaling_group_arn
+  default_auto_scaling_group_arn = var.create_autoscaling_group ? try(module.asg[0].arn, "") : var.capacity_provider_default_auto_scaling_group_arn
 
   capacity_providers                   = var.capacity_providers
   default_capacity_provider_strategies = var.default_capacity_providers_strategies
