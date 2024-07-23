@@ -35,16 +35,6 @@ output "imported_acm_certificates_arns" {
   value       = try(module.acm[0].imported_acm_certificates_arns, null)
 }
 
-output "private_ca_issued_acm_certificates_arns" {
-  description = "ARNs of the Private CA issued ACM certificates"
-  value       = try(module.acm[0].private_ca_issued_acm_certificates_arns, null)
-}
-
-output "private_ca_issued_acm_certificates_validation_records" {
-  description = "Validation Records of the Private CA issued ACM certificates"
-  value       = try(module.acm[0].private_ca_issued_acm_certificates_validation_records, null)
-}
-
 ################################################################################
 # Application Load Balancer
 ################################################################################

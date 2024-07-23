@@ -32,17 +32,6 @@ variable "imported_certificates" {
   default = {}
 }
 
-variable "private_ca_issued_certificates" {
-  description = "List of Private CA issued certificates to use to create ACM certificates"
-  type = map(object({
-    certificate_authority_arn = string
-    domain_name               = string
-    early_renewal_duration    = optional(string, null)
-    tags                      = optional(map(any), {})
-  }))
-  default = {}
-}
-
 variable "tags" {
   description = "Resource Tags to use with the created ACM certificates"
   type        = map(any)

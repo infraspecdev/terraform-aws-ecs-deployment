@@ -91,9 +91,3 @@ variable "acm_imported_certificates" {
   type        = any
   default     = {}
 }
-
-variable "acm_private_ca_issued_certificates" {
-  description = "Private CA Issued ACM certificates to create"
-  type        = any
-  default     = {}
-}

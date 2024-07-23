@@ -51,21 +51,3 @@ resource "aws_acm_certificate" "imported" {
 
   tags = merge(var.tags, each.value.tags)
 }
-
-################################################################################
-# ACM Private CA issued certificates
-################################################################################
-
-resource "aws_acm_certificate" "private_ca_issued" {
-  for_each = var.private_ca_issued_certificates
-
-  certificate_authority_arn = each.value.certificate_authority_arn
-  domain_name               = each.value.domain_name
-  early_renewal_duration    = each.value.early_renewal_duration
-
-  lifecycle {
-    create_before_destroy = true
-  }
-
-  tags = merge(var.tags, each.value.tags)
-}

@@ -37,7 +37,6 @@ Terraform module to deploy production-ready applications and services on an exis
 |------|-------------|------|---------|:--------:|
 | <a name="input_acm_amazon_issued_certificates"></a> [acm\_amazon\_issued\_certificates](#input\_acm\_amazon\_issued\_certificates) | Amazon-issued ACM certificates to create | `any` | `{}` | no |
 | <a name="input_acm_imported_certificates"></a> [acm\_imported\_certificates](#input\_acm\_imported\_certificates) | Imported ACM certificates to create | `any` | `{}` | no |
-| <a name="input_acm_private_ca_issued_certificates"></a> [acm\_private\_ca\_issued\_certificates](#input\_acm\_private\_ca\_issued\_certificates) | Private CA Issued ACM certificates to create | `any` | `{}` | no |
 | <a name="input_capacity_provider_default_auto_scaling_group_arn"></a> [capacity\_provider\_default\_auto\_scaling\_group\_arn](#input\_capacity\_provider\_default\_auto\_scaling\_group\_arn) | Default Autoscaling Group to use with the Capacity Providers | `string` | `null` | no |
 | <a name="input_capacity_providers"></a> [capacity\_providers](#input\_capacity\_providers) | Capacity Providers to create for use within the ECS Cluster | `any` | `{}` | no |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | Name of the ECS Cluster to use with the ECS Service | `string` | n/a | yes |
@@ -70,6 +69,4 @@ Terraform module to deploy production-ready applications and services on an exis
 | <a name="output_ecs_service_arn"></a> [ecs\_service\_arn](#output\_ecs\_service\_arn) | ARN of the ECS Service |
 | <a name="output_ecs_task_definition_arn"></a> [ecs\_task\_definition\_arn](#output\_ecs\_task\_definition\_arn) | ARN of the ECS Task Definition |
 | <a name="output_imported_acm_certificates_arns"></a> [imported\_acm\_certificates\_arns](#output\_imported\_acm\_certificates\_arns) | ARNs of the Imported ACM certificates |
-| <a name="output_private_ca_issued_acm_certificates_arns"></a> [private\_ca\_issued\_acm\_certificates\_arns](#output\_private\_ca\_issued\_acm\_certificates\_arns) | ARNs of the Private CA issued ACM certificates |
-| <a name="output_private_ca_issued_acm_certificates_validation_records"></a> [private\_ca\_issued\_acm\_certificates\_validation\_records](#output\_private\_ca\_issued\_acm\_certificates\_validation\_records) | Validation Records of the Private CA issued ACM certificates |
 <!-- END_TF_DOCS -->
