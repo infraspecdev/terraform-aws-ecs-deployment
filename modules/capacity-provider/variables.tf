@@ -16,7 +16,8 @@ variable "capacity_providers" {
         maximum_scaling_step_size = optional(number)
       })
     )
-    tags = optional(map(string), {})
+    managed_termination_protection = optional(string, "ENABLED")
+    tags                           = optional(map(string), {})
   }))
   default = {}
 }

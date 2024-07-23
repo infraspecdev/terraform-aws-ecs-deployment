@@ -69,21 +69,18 @@ variable "listeners" {
   description = "Listeners to forward ALB ingress to desired Target Groups."
   type = map(object({
     default_action = list(object({
-      type                 = string
-      target_group         = string
-      authenticate_cognito = optional(any, null)
-      authenticate_oidc    = optional(any, null)
-      fixed_response       = optional(any, null)
-      forward              = optional(any, null)
-      order                = optional(number)
-      redirect             = optional(any, null)
+      type           = string
+      target_group   = string
+      fixed_response = optional(any, null)
+      forward        = optional(any, null)
+      order          = optional(number)
+      redirect       = optional(any, null)
     }))
-    alpn_policy           = optional(string)
-    certificate_arn       = optional(string)
-    mutual_authentication = optional(any, null)
-    port                  = optional(number)
-    protocol              = optional(string)
-    ssl_policy            = optional(string)
-    tags                  = optional(map(string), {})
+    alpn_policy     = optional(string)
+    certificate_arn = optional(string)
+    port            = optional(number)
+    protocol        = optional(string)
+    ssl_policy      = optional(string)
+    tags            = optional(map(string), {})
   }))
 }

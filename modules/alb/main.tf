@@ -64,16 +64,6 @@ resource "aws_lb_listener" "this" {
   protocol        = each.value.protocol
   ssl_policy      = each.value.ssl_policy
 
-  dynamic "mutual_authentication" {
-    for_each = try(each.value.mutual_authentication, null) != null ? [1] : []
-
-    content {
-      mode                             = each.value.mutual_authentication.mode
-      trust_store_arn                  = each.value.mutual_authentication.trust_store_arn
-      ignore_client_certificate_expiry = try(each.value.mutual_authentication.ignore_client_certificate_expiry, null)
-    }
-  }
-
   dynamic "default_action" {
     for_each = each.value.default_action
     iterator = default_action
@@ -82,39 +72,6 @@ resource "aws_lb_listener" "this" {
       type             = default_action.value.type
       target_group_arn = aws_lb_target_group.this[default_action.value.target_group].arn
       order            = default_action.value.order
-
-      dynamic "authenticate_cognito" {
-        for_each = try(default_action.value.authenticate_cognito, null) != null ? [1] : []
-
-        content {
-          user_pool_arn                       = default_action.value.authenticate_cognito.user_pool_arn
-          user_pool_client_id                 = default_action.value.authenticate_cognito.user_pool_client_id
-          user_pool_domain                    = default_action.value.authenticate_cognito.user_pool_domain
-          authentication_request_extra_params = try(default_action.value.authenticate_cognito.authentication_request_extra_params, null)
-          on_unauthenticated_request          = try(default_action.value.authenticate_cognito.on_unauthenticated_request, null)
-          scope                               = try(default_action.value.authenticate_cognito.scope, null)
-          session_cookie_name                 = try(default_action.value.authenticate_cognito.session_cookie_name, null)
-          session_timeout                     = try(default_action.value.authenticate_cognito.session_timeout, null)
-        }
-      }
-
-      dynamic "authenticate_oidc" {
-        for_each = try(default_action.value.authenticate_oidc, null) != null ? [1] : []
-
-        content {
-          authorization_endpoint              = default_action.value.authenticate_oidc.authorization_endpoint
-          client_id                           = default_action.value.authenticate_oidc.client_id
-          client_secret                       = default_action.value.authenticate_oidc.client_secret
-          issuer                              = default_action.value.authenticate_oidc.issuer
-          token_endpoint                      = default_action.value.authenticate_oidc.token_endpoint
-          user_info_endpoint                  = default_action.value.authenticate_oidc.user_info_endpoint
-          authentication_request_extra_params = try(default_action.value.authenticate_oidc.authentication_request_extra_params, null)
-          on_unauthenticated_request          = try(default_action.value.authenticate_oidc.on_unauthenticated_request, null)
-          scope                               = try(default_action.value.authenticate_oidc.scope, null)
-          session_cookie_name                 = try(default_action.value.authenticate_oidc.session_cookie_name, null)
-          session_timeout                     = try(default_action.value.authenticate_oidc.session_timeout, null)
-        }
-      }
 
       dynamic "fixed_response" {
         for_each = try(default_action.value.fixed_response, null) != null ? [1] : []
