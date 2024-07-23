@@ -3,7 +3,7 @@
 ################################################################################
 
 output "ecs_service_arn" {
-  description = "ARN of the ECS Service"
+  description = "ARN that identifies the service."
   value       = aws_ecs_service.this.id
 }
 
@@ -12,7 +12,7 @@ output "ecs_service_arn" {
 ################################################################################
 
 output "ecs_task_definition_arn" {
-  description = "ARN of the ECS Task Definition"
+  description = "Full ARN of the Task Definition."
   value       = aws_ecs_task_definition.this.arn
 }
 
@@ -21,17 +21,17 @@ output "ecs_task_definition_arn" {
 ################################################################################
 
 output "amazon_issued_acm_certificates_arns" {
-  description = "ARNs of the Amazon issued ACM certificates"
+  description = "ARNs of the Amazon issued ACM certificates."
   value       = try(module.acm[0].amazon_issued_acm_certificates_arns, null)
 }
 
 output "amazon_issued_acm_certificates_validation_records" {
-  description = "Validation Records of the Amazon issued ACM certificates"
+  description = "Validation Records of the Amazon issued ACM certificates."
   value       = try(module.acm[0].amazon_issued_acm_certificates_validation_records, null)
 }
 
 output "imported_acm_certificates_arns" {
-  description = "ARNs of the Imported ACM certificates"
+  description = "ARNs of the Imported ACM certificates."
   value       = try(module.acm[0].imported_acm_certificates_arns, null)
 }
 
@@ -39,43 +39,38 @@ output "imported_acm_certificates_arns" {
 # Application Load Balancer
 ################################################################################
 
-output "alb_id" {
-  description = "Identifier of the Load Balancer"
-  value       = try(module.alb[0].id, null)
-}
-
 output "alb_arn" {
-  description = "ARN of the Load Balancer"
+  description = "ARN of the load balancer."
   value       = try(module.alb[0].arn, null)
 }
 
 output "alb_dns_name" {
-  description = "DNS name of the Load Balancer"
+  description = "DNS name of the load balancer."
   value       = try(module.alb[0].dns_name, null)
 }
 
 output "alb_zone_id" {
-  description = "Canonical hosted zone ID of the Load Balancer (to be used in a Route 53 Alias record)"
+  description = "Canonical hosted zone ID of the Load Balancer."
   value       = try(module.alb[0].zone_id, null)
 }
 
 output "alb_target_groups_ids" {
-  description = "Identifiers of the Target Groups"
+  description = "Identifiers of the Target Groups."
   value       = try(module.alb[0].target_groups_ids, null)
 }
 
 output "alb_target_groups_arns" {
-  description = "ARNs of the Target Groups"
+  description = "ARNs of the Target Groups."
   value       = try(module.alb[0].target_groups_arns, null)
 }
 
 output "alb_listeners_ids" {
-  description = "Identifiers of the Listeners"
+  description = "Identifiers of the Listeners."
   value       = try(module.alb[0].listeners_ids, null)
 }
 
 output "alb_listeners_arns" {
-  description = "ARNs of the Listeners"
+  description = "ARNs of the Listeners."
   value       = try(module.alb[0].listeners_arns, null)
 }
 
@@ -84,16 +79,16 @@ output "alb_listeners_arns" {
 ################################################################################
 
 output "capacity_provider_ids" {
-  description = "Identifiers for the ECS Capacity Providers"
+  description = "Identifiers for the ECS Capacity Providers."
   value       = try(module.capacity_provider[0].ids, null)
 }
 
 output "capacity_provider_arns" {
-  description = "ARNs for the ECS Capacity Providers"
+  description = "ARNs for the ECS Capacity Providers."
   value       = try(module.capacity_provider[0].arns, null)
 }
 
 output "capacity_provider_ecs_cluster_capacity_providers_id" {
-  description = "Identifier for the ECS Cluster Capacity Providers"
+  description = "Identifier for the ECS Cluster Capacity Providers."
   value       = try(module.capacity_provider[0].ecs_cluster_capacity_providers_id, null)
 }

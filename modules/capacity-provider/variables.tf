@@ -3,7 +3,7 @@
 ################################################################################
 
 variable "capacity_providers" {
-  description = "Capacity Providers to associate with the ECS Cluster"
+  description = "Capacity Providers to associate with the ECS Cluster."
   type = map(object({
     name                   = string
     auto_scaling_group_arn = optional(string)
@@ -16,7 +16,7 @@ variable "capacity_providers" {
         maximum_scaling_step_size = optional(number)
       })
     )
-    tags = optional(map(any), {})
+    tags = optional(map(string), {})
   }))
   default = {}
 }
@@ -26,12 +26,12 @@ variable "capacity_providers" {
 ################################################################################
 
 variable "ecs_cluster_name" {
-  description = "Name of the ECS Cluster"
+  description = "(Required) Name of the cluster."
   type        = string
 }
 
 variable "default_capacity_provider_strategies" {
-  description = "Default Capacity Provider Strategies to use"
+  description = "(Optional) Set of capacity provider strategies to use by default for the cluster."
   type = list(object({
     capacity_provider = string
     weight            = optional(number, 0)
@@ -51,7 +51,7 @@ variable "default_capacity_provider_strategies" {
 }
 
 variable "default_auto_scaling_group_arn" {
-  description = "Default Autoscaling group to associate with the ECS Capacity Providers"
+  description = "ARN for this Auto Scaling Group."
   type        = string
 
   validation {

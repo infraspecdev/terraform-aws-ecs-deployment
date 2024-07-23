@@ -3,12 +3,12 @@
 ################################################################################
 
 output "ids" {
-  description = "Identifiers for the ECS Capacity Providers"
+  description = "Auto Scaling Group ids."
   value       = [for ecs_capacity_provider in aws_ecs_capacity_provider.this : ecs_capacity_provider.id]
 }
 
 output "arns" {
-  description = "ARNs for the ECS Capacity Providers"
+  description = "ARNs for this Auto Scaling Group."
   value       = [for ecs_capacity_provider in aws_ecs_capacity_provider.this : ecs_capacity_provider.arn]
 }
 
@@ -17,6 +17,6 @@ output "arns" {
 ################################################################################
 
 output "ecs_cluster_capacity_providers_id" {
-  description = "Identifier for the ECS Cluster Capacity Providers"
+  description = "Same as `cluster_name`"
   value       = aws_ecs_cluster_capacity_providers.this.id
 }

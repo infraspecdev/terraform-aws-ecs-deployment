@@ -3,7 +3,7 @@
 ################################################################################
 
 variable "amazon_issued_certificates" {
-  description = "List of Amazon-issued certificates to ACM create"
+  description = "List of Amazon-issued certificates to ACM create."
   type = map(object({
     domain_name               = string
     subject_alternative_names = optional(list(string), [])
@@ -16,24 +16,24 @@ variable "amazon_issued_certificates" {
       domain_name       = string
       validation_domain = string
     }))
-    tags = optional(map(any), {})
+    tags = optional(map(string), {})
   }))
   default = {}
 }
 
 variable "imported_certificates" {
-  description = "List of imported certificates to use to create ACM certificates"
+  description = "List of imported certificates to use to create ACM certificates."
   type = map(object({
     private_key       = string
     certificate_body  = string
     certificate_chain = optional(string, null)
-    tags              = optional(map(any), {})
+    tags              = optional(map(string), {})
   }))
   default = {}
 }
 
 variable "tags" {
-  description = "Resource Tags to use with the created ACM certificates"
-  type        = map(any)
+  description = "(Optional) Map of tags to assign to the resource."
+  type        = map(string)
   default     = {}
 }

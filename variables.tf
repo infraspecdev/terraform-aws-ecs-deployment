@@ -1,10 +1,10 @@
 variable "cluster_name" {
-  description = "Name of the ECS Cluster to use with the ECS Service"
+  description = "(Required) Name of the cluster."
   type        = string
 }
 
 variable "vpc_id" {
-  description = "Identifier of the VPC to use"
+  description = "The ID of the VPC."
   type        = string
 }
 
@@ -13,7 +13,7 @@ variable "vpc_id" {
 ################################################################################
 
 variable "task_definition" {
-  description = "ECS Task Definition to use for running tasks"
+  description = "ECS Task Definition to use for running tasks."
   type        = any
 }
 
@@ -22,7 +22,7 @@ variable "task_definition" {
 ################################################################################
 
 variable "service" {
-  description = "Configuration for ECS Service"
+  description = "Configuration for ECS Service."
   type        = any
 }
 
@@ -31,25 +31,25 @@ variable "service" {
 ################################################################################
 
 variable "create_capacity_provider" {
-  description = "Creates a new Capacity Provider to use with the Autoscaling Group"
+  description = "Creates a new Capacity Provider to use with the Autoscaling Group."
   type        = bool
   default     = true
 }
 
 variable "capacity_provider_default_auto_scaling_group_arn" {
-  description = "Default Autoscaling Group to use with the Capacity Providers"
+  description = "ARN for this Auto Scaling Group."
   type        = string
   default     = null
 }
 
 variable "capacity_providers" {
-  description = "Capacity Providers to create for use within the ECS Cluster"
+  description = "Capacity Providers to associate with the ECS Cluster."
   type        = any
   default     = {}
 }
 
 variable "default_capacity_providers_strategies" {
-  description = "Default Capacity Provider Strategies to use"
+  description = "(Optional) Set of capacity provider strategies to use by default for the cluster."
   type        = any
   default     = []
 }
@@ -59,13 +59,13 @@ variable "default_capacity_providers_strategies" {
 ################################################################################
 
 variable "create_alb" {
-  description = "Creates a new Application Load Balancer to use with the ECS Service"
+  description = "Creates a new Application Load Balancer to use with the ECS Service."
   type        = bool
   default     = true
 }
 
 variable "load_balancer" {
-  description = "Configuration for the Application Load Balancer"
+  description = "Configuration for the Application Load Balancer."
   type        = any
   default     = {}
 }
@@ -75,19 +75,19 @@ variable "load_balancer" {
 ################################################################################
 
 variable "create_acm" {
-  description = "Creates the ACM certificates to use with the Load Balancer"
+  description = "Creates the ACM certificates to use with the Load Balancer."
   type        = bool
   default     = false
 }
 
 variable "acm_amazon_issued_certificates" {
-  description = "Amazon-issued ACM certificates to create"
+  description = "Amazon-issued ACM certificates to create."
   type        = any
   default     = {}
 }
 
 variable "acm_imported_certificates" {
-  description = "Imported ACM certificates to create"
+  description = "Imported ACM certificates to create."
   type        = any
   default     = {}
 }

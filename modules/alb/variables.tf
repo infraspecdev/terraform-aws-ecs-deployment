@@ -3,43 +3,43 @@
 ################################################################################
 
 variable "name" {
-  description = "Name of the ALB"
+  description = "(Optional) Name of the LB."
   type        = string
   default     = ""
 }
 
 variable "internal" {
-  description = "Either the ALB is internal or internet-facing"
+  description = "(Optional) If true, the LB will be internal."
   type        = bool
   default     = false
 }
 
 variable "security_groups_ids" {
-  description = "Identifiers of Security Groups for the ALB"
+  description = "(Optional) List of security group IDs to assign to the LB."
   type        = list(string)
   default     = []
 }
 
 variable "subnets_ids" {
-  description = "Identifiers of the VPC Subnets where the ALB will be active"
+  description = "(Optional) List of subnet IDs to attach to the LB."
   type        = list(string)
 }
 
 variable "preserve_host_header" {
-  description = "Whether the ALB should preserve the Host Header in HTTP requests and send it to the target without any changes"
+  description = "(Optional) Whether the Application Load Balancer should preserve the Host header in the HTTP request and send it to the target without any change."
   type        = bool
   default     = false
 }
 
 variable "enable_deletion_protection" {
-  description = "If true, deletion of the load balancer will be disabled via the AWS API. This will prevent Terraform from deleting the load balancer"
+  description = "(Optional) If true, deletion of the load balancer will be disabled via the AWS API."
   type        = bool
   default     = false
 }
 
 variable "tags" {
-  description = "Resource Tags for the ALB"
-  type        = map(any)
+  description = "(Optional) Map of tags to assign to the resource."
+  type        = map(string)
   default     = {}
 }
 
@@ -48,7 +48,7 @@ variable "tags" {
 ################################################################################
 
 variable "target_groups" {
-  description = "Target Groups to create and forward ALB ingress to"
+  description = "Target Groups to create and forward ALB ingress to."
   type = map(object({
     name         = optional(string)
     vpc_id       = optional(string)
@@ -56,7 +56,7 @@ variable "target_groups" {
     protocol     = optional(string)
     target_type  = optional(string)
     health_check = optional(any, null)
-    tags         = optional(map(any), {})
+    tags         = optional(map(string), {})
   }))
   default = {}
 }
@@ -66,7 +66,7 @@ variable "target_groups" {
 ################################################################################
 
 variable "listeners" {
-  description = "Listeners to forward ALB ingress to desired Target Groups"
+  description = "Listeners to forward ALB ingress to desired Target Groups."
   type = map(object({
     default_action = list(object({
       type                 = string
@@ -84,6 +84,6 @@ variable "listeners" {
     port                  = optional(number)
     protocol              = optional(string)
     ssl_policy            = optional(string)
-    tags                  = optional(map(any), {})
+    tags                  = optional(map(string), {})
   }))
 }

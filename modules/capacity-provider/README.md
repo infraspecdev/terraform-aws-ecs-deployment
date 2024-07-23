@@ -28,16 +28,16 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_capacity_providers"></a> [capacity\_providers](#input\_capacity\_providers) | Capacity Providers to associate with the ECS Cluster | <pre>map(object({<br>    name                   = string<br>    auto_scaling_group_arn = optional(string)<br>    managed_scaling = optional(<br>      object({<br>        instance_warmup_period    = optional(number)<br>        status                    = optional(string)<br>        target_capacity           = optional(number)<br>        minimum_scaling_step_size = optional(number)<br>        maximum_scaling_step_size = optional(number)<br>      })<br>    )<br>    tags = optional(map(any), {})<br>  }))</pre> | `{}` | no |
-| <a name="input_default_auto_scaling_group_arn"></a> [default\_auto\_scaling\_group\_arn](#input\_default\_auto\_scaling\_group\_arn) | Default Autoscaling group to associate with the ECS Capacity Providers | `string` | n/a | yes |
-| <a name="input_default_capacity_provider_strategies"></a> [default\_capacity\_provider\_strategies](#input\_default\_capacity\_provider\_strategies) | Default Capacity Provider Strategies to use | <pre>list(object({<br>    capacity_provider = string<br>    weight            = optional(number, 0)<br>    base              = optional(number, 0)<br>  }))</pre> | `[]` | no |
-| <a name="input_ecs_cluster_name"></a> [ecs\_cluster\_name](#input\_ecs\_cluster\_name) | Name of the ECS Cluster | `string` | n/a | yes |
+| <a name="input_capacity_providers"></a> [capacity\_providers](#input\_capacity\_providers) | Capacity Providers to associate with the ECS Cluster. | <pre>map(object({<br>    name                   = string<br>    auto_scaling_group_arn = optional(string)<br>    managed_scaling = optional(<br>      object({<br>        instance_warmup_period    = optional(number)<br>        status                    = optional(string)<br>        target_capacity           = optional(number)<br>        minimum_scaling_step_size = optional(number)<br>        maximum_scaling_step_size = optional(number)<br>      })<br>    )<br>    tags = optional(map(string), {})<br>  }))</pre> | `{}` | no |
+| <a name="input_default_auto_scaling_group_arn"></a> [default\_auto\_scaling\_group\_arn](#input\_default\_auto\_scaling\_group\_arn) | ARN for this Auto Scaling Group. | `string` | n/a | yes |
+| <a name="input_default_capacity_provider_strategies"></a> [default\_capacity\_provider\_strategies](#input\_default\_capacity\_provider\_strategies) | (Optional) Set of capacity provider strategies to use by default for the cluster. | <pre>list(object({<br>    capacity_provider = string<br>    weight            = optional(number, 0)<br>    base              = optional(number, 0)<br>  }))</pre> | `[]` | no |
+| <a name="input_ecs_cluster_name"></a> [ecs\_cluster\_name](#input\_ecs\_cluster\_name) | (Required) Name of the cluster. | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_arns"></a> [arns](#output\_arns) | ARNs for the ECS Capacity Providers |
-| <a name="output_ecs_cluster_capacity_providers_id"></a> [ecs\_cluster\_capacity\_providers\_id](#output\_ecs\_cluster\_capacity\_providers\_id) | Identifier for the ECS Cluster Capacity Providers |
-| <a name="output_ids"></a> [ids](#output\_ids) | Identifiers for the ECS Capacity Providers |
+| <a name="output_arns"></a> [arns](#output\_arns) | ARNs for this Auto Scaling Group. |
+| <a name="output_ecs_cluster_capacity_providers_id"></a> [ecs\_cluster\_capacity\_providers\_id](#output\_ecs\_cluster\_capacity\_providers\_id) | Same as `cluster_name` |
+| <a name="output_ids"></a> [ids](#output\_ids) | Auto Scaling Group ids. |
 <!-- END_TF_DOCS -->

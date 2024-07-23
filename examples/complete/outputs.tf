@@ -107,11 +107,6 @@ output "iam_instance_profile_arn" {
 # Application Load Balancer
 ################################################################################
 
-output "alb_id" {
-  description = "Identifier of the Application Load Balancer for Nginx ECS Service"
-  value       = module.ecs_deployment.alb_id
-}
-
 output "alb_arn" {
   description = "ARN of the Application Load Balancer for Nginx ECS Service"
   value       = module.ecs_deployment.alb_arn
