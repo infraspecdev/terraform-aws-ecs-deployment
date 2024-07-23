@@ -90,45 +90,6 @@ output "alb_listeners_arns" {
 }
 
 ################################################################################
-# Autoscaling Group
-################################################################################
-
-output "asg_id" {
-  description = "Identifier of the Autoscaling group"
-  value       = try(module.asg[0].id, null)
-}
-
-output "asg_arn" {
-  description = "ARN of the Autoscaling group"
-  value       = try(module.asg[0].arn, null)
-}
-
-output "asg_launch_template_id" {
-  description = "Identifier of the Launch Template"
-  value       = try(module.asg[0].launch_template_id, null)
-}
-
-output "asg_launch_template_arn" {
-  description = "ARN of the Launch Template"
-  value       = try(module.asg[0].launch_template_arn, null)
-}
-
-output "asg_iam_role_id" {
-  description = "Identifier of the IAM Role"
-  value       = try(module.asg[0].iam_role_id, null)
-}
-
-output "asg_iam_instance_profile_id" {
-  description = "Identifier of the IAM Instance Profile"
-  value       = try(module.asg[0].iam_instance_profile_id, null)
-}
-
-output "asg_iam_instance_profile_arn" {
-  description = "ARN of the IAM Instance Profile"
-  value       = try(module.asg[0].iam_instance_profile_arn, null)
-}
-
-################################################################################
 # Capacity Provider
 ################################################################################
 

@@ -147,8 +147,6 @@ resource "aws_ecs_service" "this" {
   }
 
   tags = try(var.service.tags, {})
-
-  depends_on = [module.asg]
 }
 
 ################################################################################
@@ -278,41 +276,6 @@ resource "aws_ecs_task_definition" "this" {
 }
 
 ################################################################################
-# Autoscaling Group Sub-module
-################################################################################
-
-module "asg" {
-  source = "./modules/asg"
-
-  count = var.create_autoscaling_group ? 1 : 0
-
-  name                = try(var.autoscaling_group.name, null)
-  vpc_zone_identifier = try(var.autoscaling_group.vpc_zone_identifier, [])
-
-  desired_capacity      = try(var.autoscaling_group.desired_capacity, null)
-  min_size              = try(var.autoscaling_group.min_size, null)
-  max_size              = try(var.autoscaling_group.max_size, null)
-  protect_from_scale_in = try(var.autoscaling_group.protect_from_scale_in, null)
-
-  # Launch Template
-  create_launch_template = try(var.autoscaling_group.create_launch_template, true)
-  launch_template_id     = try(var.autoscaling_group.launch_template_id, null)
-  launch_template        = try(var.autoscaling_group.launch_template, {})
-
-  # IAM Instance Profile
-  create_iam_role             = try(var.autoscaling_group.create_iam_role, true)
-  iam_role_name               = try(var.autoscaling_group.iam_role_name, null)
-  iam_role_policy_attachments = try(var.autoscaling_group.iam_role_policy_attachments, [])
-  iam_role_tags               = try(var.autoscaling_group.iam_role_tags, {})
-  create_iam_instance_profile = try(var.autoscaling_group.create_iam_instance_profile, true)
-  iam_instance_profile_name   = try(var.autoscaling_group.iam_instance_profile_name, null)
-  iam_instance_profile_tags   = try(var.autoscaling_group.iam_instance_profile_tags, {})
-
-  instances_tags = try(var.autoscaling_group.instances_tags, {})
-  tags           = try(var.autoscaling_group.tags, {})
-}
-
-################################################################################
 # Capacity Provider Sub-module
 ################################################################################
 
@@ -322,7 +285,7 @@ module "capacity_provider" {
   count = var.create_capacity_provider ? 1 : 0
 
   ecs_cluster_name               = var.cluster_name
-  default_auto_scaling_group_arn = var.create_autoscaling_group ? try(module.asg[0].arn, "") : var.capacity_provider_default_auto_scaling_group_arn
+  default_auto_scaling_group_arn = var.capacity_provider_default_auto_scaling_group_arn
 
   capacity_providers                   = var.capacity_providers
   default_capacity_provider_strategies = var.default_capacity_providers_strategies

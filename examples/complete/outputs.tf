@@ -66,22 +66,22 @@ output "vpc_public_subnets_arns" {
 
 output "asg_id" {
   description = "Identifier of the Autoscaling group"
-  value       = module.ecs_deployment.asg_id
+  value       = module.asg.autoscaling_group_id
 }
 
 output "asg_arn" {
   description = "ARN of the Autoscaling group"
-  value       = module.ecs_deployment.asg_arn
+  value       = module.asg.autoscaling_group_arn
 }
 
 output "launch_template_id" {
   description = "Identifier of the Launch Template"
-  value       = module.ecs_deployment.asg_launch_template_id
+  value       = module.asg.launch_template_id
 }
 
 output "launch_template_arn" {
   description = "ARN of the Launch Template"
-  value       = module.ecs_deployment.asg_launch_template_arn
+  value       = module.asg.launch_template_arn
 }
 
 ################################################################################
@@ -90,17 +90,17 @@ output "launch_template_arn" {
 
 output "iam_instance_role_id" {
   description = "Identifier of the IAM Instance Role"
-  value       = module.ecs_deployment.asg_iam_role_id
+  value       = module.asg.iam_role_unique_id
 }
 
 output "iam_instance_profile_id" {
   description = "Identifier of the IAM Instance Profile"
-  value       = module.ecs_deployment.asg_iam_instance_profile_id
+  value       = module.asg.iam_instance_profile_id
 }
 
 output "iam_instance_profile_arn" {
   description = "ARN of the IAM Instance Profile"
-  value       = module.ecs_deployment.asg_iam_instance_profile_arn
+  value       = module.asg.iam_instance_profile_arn
 }
 
 ################################################################################

@@ -22,7 +22,6 @@ Terraform module to deploy production-ready applications and services on an exis
 |------|--------|---------|
 | <a name="module_acm"></a> [acm](#module\_acm) | ./modules/acm | n/a |
 | <a name="module_alb"></a> [alb](#module\_alb) | ./modules/alb | n/a |
-| <a name="module_asg"></a> [asg](#module\_asg) | ./modules/asg | n/a |
 | <a name="module_capacity_provider"></a> [capacity\_provider](#module\_capacity\_provider) | ./modules/capacity-provider | n/a |
 
 ## Resources
@@ -39,13 +38,11 @@ Terraform module to deploy production-ready applications and services on an exis
 | <a name="input_acm_amazon_issued_certificates"></a> [acm\_amazon\_issued\_certificates](#input\_acm\_amazon\_issued\_certificates) | Amazon-issued ACM certificates to create | `any` | `{}` | no |
 | <a name="input_acm_imported_certificates"></a> [acm\_imported\_certificates](#input\_acm\_imported\_certificates) | Imported ACM certificates to create | `any` | `{}` | no |
 | <a name="input_acm_private_ca_issued_certificates"></a> [acm\_private\_ca\_issued\_certificates](#input\_acm\_private\_ca\_issued\_certificates) | Private CA Issued ACM certificates to create | `any` | `{}` | no |
-| <a name="input_autoscaling_group"></a> [autoscaling\_group](#input\_autoscaling\_group) | Configuration for Autoscaling Group | `any` | `{}` | no |
 | <a name="input_capacity_provider_default_auto_scaling_group_arn"></a> [capacity\_provider\_default\_auto\_scaling\_group\_arn](#input\_capacity\_provider\_default\_auto\_scaling\_group\_arn) | Default Autoscaling Group to use with the Capacity Providers | `string` | `null` | no |
 | <a name="input_capacity_providers"></a> [capacity\_providers](#input\_capacity\_providers) | Capacity Providers to create for use within the ECS Cluster | `any` | `{}` | no |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | Name of the ECS Cluster to use with the ECS Service | `string` | n/a | yes |
 | <a name="input_create_acm"></a> [create\_acm](#input\_create\_acm) | Creates the ACM certificates to use with the Load Balancer | `bool` | `false` | no |
 | <a name="input_create_alb"></a> [create\_alb](#input\_create\_alb) | Creates a new Application Load Balancer to use with the ECS Service | `bool` | `true` | no |
-| <a name="input_create_autoscaling_group"></a> [create\_autoscaling\_group](#input\_create\_autoscaling\_group) | Creates a new Autoscaling group to use with the ECS Service | `bool` | `true` | no |
 | <a name="input_create_capacity_provider"></a> [create\_capacity\_provider](#input\_create\_capacity\_provider) | Creates a new Capacity Provider to use with the Autoscaling Group | `bool` | `true` | no |
 | <a name="input_default_capacity_providers_strategies"></a> [default\_capacity\_providers\_strategies](#input\_default\_capacity\_providers\_strategies) | Default Capacity Provider Strategies to use | `any` | `[]` | no |
 | <a name="input_load_balancer"></a> [load\_balancer](#input\_load\_balancer) | Configuration for the Application Load Balancer | `any` | `{}` | no |
@@ -67,13 +64,6 @@ Terraform module to deploy production-ready applications and services on an exis
 | <a name="output_alb_zone_id"></a> [alb\_zone\_id](#output\_alb\_zone\_id) | Canonical hosted zone ID of the Load Balancer (to be used in a Route 53 Alias record) |
 | <a name="output_amazon_issued_acm_certificates_arns"></a> [amazon\_issued\_acm\_certificates\_arns](#output\_amazon\_issued\_acm\_certificates\_arns) | ARNs of the Amazon issued ACM certificates |
 | <a name="output_amazon_issued_acm_certificates_validation_records"></a> [amazon\_issued\_acm\_certificates\_validation\_records](#output\_amazon\_issued\_acm\_certificates\_validation\_records) | Validation Records of the Amazon issued ACM certificates |
-| <a name="output_asg_arn"></a> [asg\_arn](#output\_asg\_arn) | ARN of the Autoscaling group |
-| <a name="output_asg_iam_instance_profile_arn"></a> [asg\_iam\_instance\_profile\_arn](#output\_asg\_iam\_instance\_profile\_arn) | ARN of the IAM Instance Profile |
-| <a name="output_asg_iam_instance_profile_id"></a> [asg\_iam\_instance\_profile\_id](#output\_asg\_iam\_instance\_profile\_id) | Identifier of the IAM Instance Profile |
-| <a name="output_asg_iam_role_id"></a> [asg\_iam\_role\_id](#output\_asg\_iam\_role\_id) | Identifier of the IAM Role |
-| <a name="output_asg_id"></a> [asg\_id](#output\_asg\_id) | Identifier of the Autoscaling group |
-| <a name="output_asg_launch_template_arn"></a> [asg\_launch\_template\_arn](#output\_asg\_launch\_template\_arn) | ARN of the Launch Template |
-| <a name="output_asg_launch_template_id"></a> [asg\_launch\_template\_id](#output\_asg\_launch\_template\_id) | Identifier of the Launch Template |
 | <a name="output_capacity_provider_arns"></a> [capacity\_provider\_arns](#output\_capacity\_provider\_arns) | ARNs for the ECS Capacity Providers |
 | <a name="output_capacity_provider_ecs_cluster_capacity_providers_id"></a> [capacity\_provider\_ecs\_cluster\_capacity\_providers\_id](#output\_capacity\_provider\_ecs\_cluster\_capacity\_providers\_id) | Identifier for the ECS Cluster Capacity Providers |
 | <a name="output_capacity_provider_ids"></a> [capacity\_provider\_ids](#output\_capacity\_provider\_ids) | Identifiers for the ECS Capacity Providers |

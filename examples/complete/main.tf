@@ -1,5 +1,6 @@
 provider "aws" {
-  region = local.region
+  region  = local.region
+  profile = "dev"
 
   default_tags {
     tags = local.default_tags
@@ -108,33 +109,8 @@ module "ecs_deployment" {
     ]
   }
 
-  # ASG
-  autoscaling_group = {
-    name                  = "${local.name_prefix}my-asg"
-    vpc_zone_identifier   = module.vpc.private_subnets
-    protect_from_scale_in = true
-
-    desired_capacity = 1
-    min_size         = 1
-    max_size         = 1
-
-    launch_template = {
-      name                   = "${local.name_prefix}my-launch-template"
-      image_id               = data.aws_ami.ecs_optimized_amzn_linux.id
-      instance_type          = "t2.micro"
-      vpc_security_group_ids = [aws_security_group.allow_all_within_vpc.id]
-      user_data              = <<-EOT
-          #!/bin/bash
-          echo ECS_CLUSTER=${local.cluster_name} >> /etc/ecs/ecs.config
-        EOT
-    }
-
-    iam_role_policy_attachments = [
-      "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
-    ]
-  }
-
   # Capacity Provider
+  capacity_provider_default_auto_scaling_group_arn = module.asg.autoscaling_group_arn
   capacity_providers = {
     my-capacity-provider = {
       name = "${local.name_prefix}my-capacity-provider"
@@ -199,6 +175,8 @@ module "ecs_deployment" {
       }
     }
   }
+
+  depends_on = [module.asg]
 }
 
 ################################################################################
@@ -218,6 +196,44 @@ module "vpc" {
 
   enable_nat_gateway = false
   enable_vpn_gateway = false
+}
+
+module "asg" {
+  source = "terraform-aws-modules/autoscaling/aws"
+
+  name = "${local.name_prefix}my-asg"
+
+  min_size            = 1
+  max_size            = 1
+  desired_capacity    = 1
+  health_check_type   = "EC2"
+  vpc_zone_identifier = module.vpc.private_subnets
+
+  # Launch template
+  launch_template_name        = "${local.name_prefix}my-asg"
+  launch_template_description = "My example Launch template"
+  image_id                    = data.aws_ami.ecs_optimized_amzn_linux.image_id
+  instance_type               = "t2.micro"
+  update_default_version      = true
+  security_groups             = [aws_security_group.allow_all_within_vpc.id]
+
+  # IAM role & instance profile
+  create_iam_instance_profile = true
+  iam_role_name               = "${local.name_prefix}my-asg"
+  iam_role_description        = "My example IAM role for ${local.name_prefix}my-asg"
+  iam_role_policies = {
+    AmazonEC2ContainerServiceforEC2Role = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role",
+    AmazonSSMManagedInstanceCore        = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  }
+
+  # This will ensure imdsv2 is enabled, required, and a single hop which is aws security
+  # best practices
+  # See https://docs.aws.amazon.com/securityhub/latest/userguide/autoscaling-controls.html#autoscaling-4
+  metadata_options = {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 1
+  }
 }
 
 ################################################################################

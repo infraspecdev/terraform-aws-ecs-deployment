@@ -27,22 +27,6 @@ variable "service" {
 }
 
 ################################################################################
-# Autoscaling Group Sub-module
-################################################################################
-
-variable "create_autoscaling_group" {
-  description = "Creates a new Autoscaling group to use with the ECS Service"
-  type        = bool
-  default     = true
-}
-
-variable "autoscaling_group" {
-  description = "Configuration for Autoscaling Group"
-  type        = any
-  default     = {}
-}
-
-################################################################################
 # Capacity Provider Sub-module
 ################################################################################
 
