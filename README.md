@@ -3,6 +3,10 @@
 
 Terraform module to deploy production-ready applications and services on an existing ECS infra.
 
+## Architecture Diagram
+
+![ECS Deployment Architecture Diagram](./diagrams/ecs-deployment-diagram.jpeg)
+
 ## Requirements
 
 | Name | Version |
