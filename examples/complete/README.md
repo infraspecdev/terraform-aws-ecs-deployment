@@ -1,3 +1,4 @@
+<!-- BEGIN_TF_DOCS -->
 # ECS Deployment Complete
 
 Configuration in this directory creates:
@@ -20,7 +21,6 @@ terraform apply
 
 Please note that this example may create resources that can incur monetary charges on your AWS bill. You can run `terraform destroy` when you no longer need the resources.
 
-<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -37,10 +37,7 @@ Please note that this example may create resources that can incur monetary charg
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_acm"></a> [acm](#module\_acm) | ../../modules/acm | n/a |
-| <a name="module_alb"></a> [alb](#module\_alb) | ../../modules/alb | n/a |
-| <a name="module_asg"></a> [asg](#module\_asg) | ../../modules/asg | n/a |
-| <a name="module_capacity_provider"></a> [capacity\_provider](#module\_capacity\_provider) | ../../modules/capacity-provider | n/a |
+| <a name="module_asg"></a> [asg](#module\_asg) | terraform-aws-modules/autoscaling/aws | n/a |
 | <a name="module_ecs_deployment"></a> [ecs\_deployment](#module\_ecs\_deployment) | ../../ | n/a |
 | <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | ~> 5.9.0 |
 
@@ -67,7 +64,6 @@ No inputs.
 | <a name="output_acm_amazon_issued_certificate_arn"></a> [acm\_amazon\_issued\_certificate\_arn](#output\_acm\_amazon\_issued\_certificate\_arn) | ARN of the ACM Amazon-issued certificate for the base domain |
 | <a name="output_alb_allow_all_sg_id"></a> [alb\_allow\_all\_sg\_id](#output\_alb\_allow\_all\_sg\_id) | ID of the Security Group for Application Load Balancer to allow all traffic from any source |
 | <a name="output_alb_arn"></a> [alb\_arn](#output\_alb\_arn) | ARN of the Application Load Balancer for Nginx ECS Service |
-| <a name="output_alb_id"></a> [alb\_id](#output\_alb\_id) | Identifier of the Application Load Balancer for Nginx ECS Service |
 | <a name="output_allow_all_within_vpc_sg_id"></a> [allow\_all\_within\_vpc\_sg\_id](#output\_allow\_all\_within\_vpc\_sg\_id) | ID of the Security Group to allow all traffic from any source within the VPC |
 | <a name="output_allow_nginx_http_from_alb_sg_id"></a> [allow\_nginx\_http\_from\_alb\_sg\_id](#output\_allow\_nginx\_http\_from\_alb\_sg\_id) | ID of the Security Group to allow all Nginx HTTP traffic from Application Load Balancer |
 | <a name="output_asg_arn"></a> [asg\_arn](#output\_asg\_arn) | ARN of the Autoscaling group |
