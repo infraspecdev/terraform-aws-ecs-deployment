@@ -1,7 +1,5 @@
 formatter: "markdown table"
 
-version: ""
-
 header-from: .header.md
 footer-from: ""
 
