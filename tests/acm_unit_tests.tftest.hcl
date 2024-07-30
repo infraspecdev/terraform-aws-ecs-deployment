@@ -21,10 +21,6 @@ run "amazon_issued_certificates_attributes_match" {
         validation_method         = "EMAIL"
         key_algorithm             = "RSA_4096"
 
-        options = {
-          certificate_transparency_logging_preference = "ENABLED"
-        }
-
         validation_option = {
           domain_name       = "example.domain"
           validation_domain = "me@example.domain"
@@ -50,11 +46,6 @@ run "amazon_issued_certificates_attributes_match" {
   assert {
     condition     = aws_acm_certificate.amazon_issued["example"].key_algorithm == var.amazon_issued_certificates.example.key_algorithm
     error_message = "Key algorithm mismatch"
-  }
-
-  assert {
-    condition     = aws_acm_certificate.amazon_issued["example"].options[0].certificate_transparency_logging_preference == var.amazon_issued_certificates.example.options.certificate_transparency_logging_preference
-    error_message = "Certificate transparency logging preference mismatch"
   }
 
   assert {

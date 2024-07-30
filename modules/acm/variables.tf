@@ -9,9 +9,6 @@ variable "amazon_issued_certificates" {
     subject_alternative_names = optional(list(string), [])
     validation_method         = optional(string, null)
     key_algorithm             = optional(string, null)
-    options = optional(object({
-      certificate_transparency_logging_preference = optional(string, null)
-    }))
     validation_option = optional(object({
       domain_name       = string
       validation_domain = string
