@@ -168,50 +168,12 @@ resource "aws_ecs_task_definition" "this" {
   task_role_arn            = try(var.task_definition.task_role_arn, null)
   track_latest             = try(var.task_definition.track_latest, null)
 
-  dynamic "inference_accelerator" {
-    for_each = try(var.task_definition.inference_accelerator, [])
-    iterator = inference_accelerator
-
-    content {
-      device_name = inference_accelerator.value.device_name
-      device_type = inference_accelerator.value.device_type
-    }
-  }
-
   dynamic "runtime_platform" {
     for_each = length(try(var.task_definition.runtime_platform, {})) > 0 ? [1] : []
 
     content {
       operating_system_family = try(var.task_definition.runtime_platform.operating_system_family, null)
       cpu_architecture        = try(var.task_definition.runtime_platform.cpu_architecture, null)
-    }
-  }
-
-  dynamic "placement_constraints" {
-    for_each = try(var.task_definition.placement_constraints, [])
-    iterator = placement_constraints
-
-    content {
-      expression = try(placement_constraints.value.expression, null)
-      type       = placement_constraints.value.type
-    }
-  }
-
-  dynamic "proxy_configuration" {
-    for_each = length(try(var.task_definition.proxy_configuration, {})) > 0 ? [1] : []
-
-    content {
-      container_name = var.task_definition.proxy_configuration.container_name
-      properties     = var.task_definition.proxy_configuration.properties
-      type           = try(var.task_definition.proxy_configuration.type, null)
-    }
-  }
-
-  dynamic "ephemeral_storage" {
-    for_each = length(try(var.task_definition.ephemeral_storage, {})) > 0 ? [1] : []
-
-    content {
-      size_in_gib = var.task_definition.ephemeral_storage.size_in_gib
     }
   }
 
@@ -233,40 +195,6 @@ resource "aws_ecs_task_definition" "this" {
           driver        = try(volume.value.docker_volume_configuration.driver, null)
           labels        = try(volume.value.docker_volume_configuration.labels, null)
           scope         = try(volume.value.docker_volume_configuration.scope, null)
-        }
-      }
-
-      dynamic "efs_volume_configuration" {
-        for_each = length(try(volume.value.efs_volume_configuration, {})) > 0 ? [1] : []
-
-        content {
-          file_system_id          = volume.value.efs_volume_configuration.file_system_id
-          root_directory          = try(volume.value.efs_volume_configuration.root_directory, null)
-          transit_encryption      = try(volume.value.efs_volume_configuration.transit_encryption, null)
-          transit_encryption_port = try(volume.value.efs_volume_configuration.transit_encryption_port, null)
-
-          dynamic "authorization_config" {
-            for_each = length(try(volume.value.efs_volume_configuration.authorization_config, {})) > 0 ? [1] : []
-
-            content {
-              access_point_id = try(volume.value.efs_volume_configuration.authorization_config.access_point_id, null)
-              iam             = try(volume.value.efs_volume_configuration.authorization_config.iam, null)
-            }
-          }
-        }
-      }
-
-      dynamic "fsx_windows_file_server_volume_configuration" {
-        for_each = length(try(volume.value.fsx_windows_file_server_volume_configuration, {})) > 0 ? [1] : []
-
-        content {
-          file_system_id = volume.value.fsx_windows_file_server_volume_configuration.file_system_id
-          root_directory = volume.value.fsx_windows_file_server_volume_configuration.root_directory
-
-          authorization_config {
-            credentials_parameter = volume.value.fsx_windows_file_server_volume_configuration.credentials_parameter
-            domain                = volume.value.fsx_windows_file_server_volume_configuration.domain
-          }
         }
       }
     }
