@@ -11,7 +11,7 @@
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.58.0 |
 
 ## Modules
 
@@ -23,6 +23,7 @@ No modules.
 |------|------|
 | [aws_lb.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb) | resource |
 | [aws_lb_listener.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener) | resource |
+| [aws_lb_listener_rule.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener_rule) | resource |
 | [aws_lb_target_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group) | resource |
 
 ## Inputs
@@ -31,6 +32,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_enable_deletion_protection"></a> [enable\_deletion\_protection](#input\_enable\_deletion\_protection) | (Optional) If true, deletion of the load balancer will be disabled via the AWS API. | `bool` | `false` | no |
 | <a name="input_internal"></a> [internal](#input\_internal) | (Optional) If true, the LB will be internal. | `bool` | `false` | no |
+| <a name="input_listener_rules"></a> [listener\_rules](#input\_listener\_rules) | Listener rules to associate with the the ALB Listeners. | <pre>map(object({<br>    listener = string<br>    priority = optional(number)<br>    action = list(object({<br>      type = string<br>      authenticate_oidc = optional(object({<br>        authorization_endpoint     = string<br>        client_id                  = string<br>        client_secret              = string<br>        issuer                     = string<br>        on_unauthenticated_request = optional(string)<br>        scope                      = optional(string)<br>        session_cookie_name        = optional(string)<br>        token_endpoint             = string<br>        user_info_endpoint         = string<br>      }))<br>      target_group = optional(string)<br>    }))<br>    condition = set(object({<br>      host_header = optional(object({<br>        values = set(string)<br>      }))<br>      path_pattern = optional(object({<br>        values = set(string)<br>      }))<br>      http_request_method = optional(object({<br>        values = set(string)<br>      }))<br>    }))<br>    tags = optional(map(string), {})<br>  }))</pre> | `{}` | no |
 | <a name="input_listeners"></a> [listeners](#input\_listeners) | Listeners to forward ALB ingress to desired Target Groups. | <pre>map(object({<br>    default_action = list(object({<br>      type           = string<br>      target_group   = string<br>      fixed_response = optional(any, null)<br>      forward        = optional(any, null)<br>      order          = optional(number)<br>      redirect       = optional(any, null)<br>    }))<br>    certificate_arn = optional(string)<br>    port            = optional(number)<br>    protocol        = optional(string)<br>    ssl_policy      = optional(string)<br>    tags            = optional(map(string), {})<br>  }))</pre> | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | (Optional) Name of the LB. | `string` | `""` | no |
 | <a name="input_preserve_host_header"></a> [preserve\_host\_header](#input\_preserve\_host\_header) | (Optional) Whether the Application Load Balancer should preserve the Host header in the HTTP request and send it to the target without any change. | `bool` | `false` | no |
@@ -45,6 +47,8 @@ No modules.
 |------|-------------|
 | <a name="output_arn"></a> [arn](#output\_arn) | ARN of the load balancer. |
 | <a name="output_dns_name"></a> [dns\_name](#output\_dns\_name) | DNS name of the load balancer. |
+| <a name="output_listener_rules_arns"></a> [listener\_rules\_arns](#output\_listener\_rules\_arns) | ARNs of the Listener Rules. |
+| <a name="output_listener_rules_ids"></a> [listener\_rules\_ids](#output\_listener\_rules\_ids) | Identifiers of the Listener Rules. |
 | <a name="output_listeners_arns"></a> [listeners\_arns](#output\_listeners\_arns) | ARNs of the Listeners. |
 | <a name="output_listeners_ids"></a> [listeners\_ids](#output\_listeners\_ids) | Identifiers of the Listeners. |
 | <a name="output_target_groups_arns"></a> [target\_groups\_arns](#output\_target\_groups\_arns) | ARNs of the Target Groups. |

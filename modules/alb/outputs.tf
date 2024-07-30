@@ -44,3 +44,17 @@ output "listeners_arns" {
   description = "ARNs of the Listeners."
   value       = { for k, v in aws_lb_listener.this : k => v.arn }
 }
+
+################################################################################
+# Load Balancer Listener Rules
+################################################################################
+
+output "listener_rules_ids" {
+  description = "Identifiers of the Listener Rules."
+  value       = { for k, v in aws_lb_listener_rule.this : k => v.id }
+}
+
+output "listener_rules_arns" {
+  description = "ARNs of the Listener Rules."
+  value       = { for k, v in aws_lb_listener_rule.this : k => v.arn }
+}

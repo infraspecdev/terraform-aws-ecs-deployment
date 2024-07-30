@@ -128,3 +128,75 @@ resource "aws_lb_listener" "this" {
 
   tags = each.value.tags
 }
+
+################################################################################
+# Load Balancer Listener Rule
+################################################################################
+
+resource "aws_lb_listener_rule" "this" {
+  for_each = var.listener_rules
+
+  listener_arn = aws_lb_listener.this[each.value.listener].arn
+  priority     = try(each.value.priority, null)
+
+  dynamic "action" {
+    for_each = each.value.action
+
+    content {
+      type = action.value.type
+      target_group_arn = lookup(
+        aws_lb_target_group.this,
+        try(action.value.target_group, ""),
+        null
+      ) != null ? aws_lb_target_group.this[try(action.value.target_group, null)].arn : null
+
+      dynamic "authenticate_oidc" {
+        for_each = try(action.value.authenticate_oidc, null) != null ? [1] : []
+
+        content {
+          authorization_endpoint     = action.value.authenticate_oidc.authorization_endpoint
+          client_id                  = action.value.authenticate_oidc.client_id
+          client_secret              = action.value.authenticate_oidc.client_secret
+          issuer                     = action.value.authenticate_oidc.issuer
+          on_unauthenticated_request = try(action.value.authenticate_oidc.on_unauthenticated_request, null)
+          scope                      = try(action.value.authenticate_oidc.scope, null)
+          session_cookie_name        = try(action.value.authenticate_oidc.session_cookie_name, null)
+          token_endpoint             = action.value.authenticate_oidc.token_endpoint
+          user_info_endpoint         = action.value.authenticate_oidc.user_info_endpoint
+        }
+      }
+    }
+  }
+
+  dynamic "condition" {
+    for_each = each.value.condition
+
+    content {
+      dynamic "host_header" {
+        for_each = try(condition.value.host_header, null) != null ? [1] : []
+
+        content {
+          values = condition.value.host_header.values
+        }
+      }
+
+      dynamic "path_pattern" {
+        for_each = try(condition.value.path_pattern, null) != null ? [1] : []
+
+        content {
+          values = condition.value.path_pattern.values
+        }
+      }
+
+      dynamic "http_request_method" {
+        for_each = try(condition.value.http_request_method, null) != null ? [1] : []
+
+        content {
+          values = condition.value.http_request_method.values
+        }
+      }
+    }
+  }
+
+  tags = each.value.tags
+}

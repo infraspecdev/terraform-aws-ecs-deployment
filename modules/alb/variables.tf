@@ -83,3 +83,43 @@ variable "listeners" {
     tags            = optional(map(string), {})
   }))
 }
+
+################################################################################
+# Load Balancer Listener Rule
+################################################################################
+
+variable "listener_rules" {
+  description = "Listener rules to associate with the the ALB Listeners."
+  type = map(object({
+    listener = string
+    priority = optional(number)
+    action = list(object({
+      type = string
+      authenticate_oidc = optional(object({
+        authorization_endpoint     = string
+        client_id                  = string
+        client_secret              = string
+        issuer                     = string
+        on_unauthenticated_request = optional(string)
+        scope                      = optional(string)
+        session_cookie_name        = optional(string)
+        token_endpoint             = string
+        user_info_endpoint         = string
+      }))
+      target_group = optional(string)
+    }))
+    condition = set(object({
+      host_header = optional(object({
+        values = set(string)
+      }))
+      path_pattern = optional(object({
+        values = set(string)
+      }))
+      http_request_method = optional(object({
+        values = set(string)
+      }))
+    }))
+    tags = optional(map(string), {})
+  }))
+  default = {}
+}
