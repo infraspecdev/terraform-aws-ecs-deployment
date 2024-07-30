@@ -252,6 +252,8 @@ module "alb" {
     )
   }
 
+  listener_rules = try(var.load_balancer.listener_rules, {})
+
   tags = try(var.load_balancer.tags, {})
 }
 

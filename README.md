@@ -59,6 +59,8 @@ Terraform module to deploy production-ready applications and services on an exis
 |------|-------------|
 | <a name="output_alb_arn"></a> [alb\_arn](#output\_alb\_arn) | ARN of the load balancer. |
 | <a name="output_alb_dns_name"></a> [alb\_dns\_name](#output\_alb\_dns\_name) | DNS name of the load balancer. |
+| <a name="output_alb_listener_rules_arns"></a> [alb\_listener\_rules\_arns](#output\_alb\_listener\_rules\_arns) | ARNs of the Listener Rules. |
+| <a name="output_alb_listener_rules_ids"></a> [alb\_listener\_rules\_ids](#output\_alb\_listener\_rules\_ids) | Identifiers of the Listener Rules. |
 | <a name="output_alb_listeners_arns"></a> [alb\_listeners\_arns](#output\_alb\_listeners\_arns) | ARNs of the Listeners. |
 | <a name="output_alb_listeners_ids"></a> [alb\_listeners\_ids](#output\_alb\_listeners\_ids) | Identifiers of the Listeners. |
 | <a name="output_alb_target_groups_arns"></a> [alb\_target\_groups\_arns](#output\_alb\_target\_groups\_arns) | ARNs of the Target Groups. |

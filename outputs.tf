@@ -74,6 +74,16 @@ output "alb_listeners_arns" {
   value       = try(module.alb[0].listeners_arns, null)
 }
 
+output "alb_listener_rules_ids" {
+  description = "Identifiers of the Listener Rules."
+  value       = try(module.alb[0].listener_rules_ids, null)
+}
+
+output "alb_listener_rules_arns" {
+  description = "ARNs of the Listener Rules."
+  value       = try(module.alb[0].listener_rules_arns, null)
+}
+
 ################################################################################
 # Capacity Provider
 ################################################################################
