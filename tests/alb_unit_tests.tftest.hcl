@@ -212,7 +212,6 @@ run "lb_listener_attributes_match" {
 
     listeners = {
       this = {
-        alpn_policy     = "HTTP2Preferred"
         certificate_arn = "arn:aws:acm:us-west-2:123456789012:certificate/12345678-1234-1234-1234-123456789012"
         port            = 1234
         protocol        = "HTTPS"
@@ -230,11 +229,6 @@ run "lb_listener_attributes_match" {
     tags = {
       Example = "Tag"
     }
-  }
-
-  assert {
-    condition     = aws_lb_listener.this["this"].alpn_policy == var.listeners["this"].alpn_policy
-    error_message = "ALPN policy mismatch"
   }
 
   assert {

@@ -76,7 +76,6 @@ variable "listeners" {
       order          = optional(number)
       redirect       = optional(any, null)
     }))
-    alpn_policy     = optional(string)
     certificate_arn = optional(string)
     port            = optional(number)
     protocol        = optional(string)

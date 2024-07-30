@@ -1,10 +1,14 @@
+locals {
+  load_balancer_type = "application"
+}
+
 ################################################################################
 # Load Balancer
 ################################################################################
 
 resource "aws_lb" "this" {
   name               = var.name
-  load_balancer_type = "application"
+  load_balancer_type = local.load_balancer_type
   internal           = var.internal
 
   subnets         = var.subnets_ids
@@ -58,7 +62,6 @@ resource "aws_lb_listener" "this" {
 
   load_balancer_arn = aws_lb.this.arn
 
-  alpn_policy     = each.value.alpn_policy
   certificate_arn = each.value.certificate_arn
   port            = each.value.port
   protocol        = each.value.protocol
