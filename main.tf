@@ -106,11 +106,20 @@ resource "aws_ecs_service" "this" {
           ingress_port_override = try(service.value.ingress_port_override, null)
 
           dynamic "client_alias" {
-            for_each = length(try(service.client_alias, {})) > 0 ? [1] : []
+            for_each = length(try(service.value.client_alias, {})) > 0 ? [1] : []
 
             content {
-              port     = service.client_alias.port
-              dns_name = try(service.client_alias.dns_name, null)
+              port     = service.value.client_alias.port
+              dns_name = try(service.value.client_alias.dns_name, null)
+            }
+          }
+
+          dynamic "timeout" {
+            for_each = length(try(service.value.timeout, {})) > 0 ? [1] : []
+
+            content {
+              idle_timeout_seconds        = try(service.value.timeout.idle_timeout_seconds, null)
+              per_request_timeout_seconds = try(service.value.timeout.per_request_timeout_seconds, null)
             }
           }
         }
