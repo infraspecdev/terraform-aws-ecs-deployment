@@ -7,15 +7,12 @@ locals {
 ################################################################################
 
 resource "aws_lb" "this" {
-  name               = var.name
-  load_balancer_type = local.load_balancer_type
-  internal           = var.internal
-
-  subnets         = var.subnets_ids
-  security_groups = var.security_groups_ids
-
-  preserve_host_header = var.preserve_host_header
-
+  name                       = try(var.name, null)
+  load_balancer_type         = try(local.load_balancer_type, null)
+  internal                   = try(var.internal, null)
+  subnets                    = var.subnets_ids
+  security_groups            = var.security_groups_ids
+  preserve_host_header       = var.preserve_host_header
   enable_deletion_protection = var.enable_deletion_protection
 
   tags = var.tags
@@ -28,11 +25,11 @@ resource "aws_lb" "this" {
 resource "aws_lb_target_group" "this" {
   for_each = var.target_groups
 
-  name        = each.value.name
-  vpc_id      = each.value.vpc_id
-  port        = each.value.port
-  protocol    = each.value.protocol
-  target_type = each.value.target_type
+  name        = try(each.value.name, null)
+  vpc_id      = try(each.value.vpc_id, null)
+  port        = try(each.value.port, null)
+  protocol    = try(each.value.protocol, null)
+  target_type = try(each.value.target_type, null)
 
   dynamic "health_check" {
     for_each = try(each.value.health_check, null) != null ? [1] : []
@@ -62,10 +59,10 @@ resource "aws_lb_listener" "this" {
 
   load_balancer_arn = aws_lb.this.arn
 
-  certificate_arn = each.value.certificate_arn
-  port            = each.value.port
-  protocol        = each.value.protocol
-  ssl_policy      = each.value.ssl_policy
+  certificate_arn = try(each.value.certificate_arn, null)
+  port            = try(each.value.port, null)
+  protocol        = try(each.value.protocol, null)
+  ssl_policy      = try(each.value.ssl_policy, null)
 
   dynamic "default_action" {
     for_each = each.value.default_action
@@ -74,7 +71,7 @@ resource "aws_lb_listener" "this" {
     content {
       type             = default_action.value.type
       target_group_arn = aws_lb_target_group.this[default_action.value.target_group].arn
-      order            = default_action.value.order
+      order            = try(default_action.value.order, null)
 
       dynamic "fixed_response" {
         for_each = try(default_action.value.fixed_response, null) != null ? [1] : []
@@ -96,7 +93,7 @@ resource "aws_lb_listener" "this" {
 
             content {
               arn    = target_group.value.arn
-              weight = target_group.value.weight
+              weight = try(target_group.value.weight, null)
             }
           }
 
@@ -105,7 +102,7 @@ resource "aws_lb_listener" "this" {
 
             content {
               duration = default_action.value.forward.stickiness.duration
-              enabled  = try(default_action.value.forward.stickiness.enabled, false)
+              enabled  = try(default_action.value.forward.stickiness.enabled, null)
             }
           }
         }
@@ -146,7 +143,7 @@ resource "aws_lb_listener_rule" "this" {
       type = action.value.type
       target_group_arn = lookup(
         aws_lb_target_group.this,
-        try(action.value.target_group, ""),
+        try(action.value.target_group, null) != null ? try(action.value.target_group, "") : "",
         null
       ) != null ? aws_lb_target_group.this[try(action.value.target_group, null)].arn : null
 

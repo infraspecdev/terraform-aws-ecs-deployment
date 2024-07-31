@@ -5,10 +5,10 @@
 resource "aws_acm_certificate" "amazon_issued" {
   for_each = var.amazon_issued_certificates
 
-  domain_name               = each.value.domain_name
-  subject_alternative_names = each.value.subject_alternative_names
-  validation_method         = each.value.validation_method
-  key_algorithm             = each.value.key_algorithm
+  domain_name               = try(each.value.domain_name, null)
+  subject_alternative_names = try(each.value.subject_alternative_names, null)
+  validation_method         = try(each.value.validation_method, null)
+  key_algorithm             = try(each.value.key_algorithm, null)
 
   dynamic "validation_option" {
     for_each = try(each.value.validation_option, null) != null ? [1] : []
@@ -33,9 +33,9 @@ resource "aws_acm_certificate" "amazon_issued" {
 resource "aws_acm_certificate" "imported" {
   for_each = var.imported_certificates
 
-  private_key       = each.value.private_key
-  certificate_body  = each.value.certificate_body
-  certificate_chain = each.value.certificate_chain
+  private_key       = try(each.value.private_key, null)
+  certificate_body  = try(each.value.certificate_body, null)
+  certificate_chain = try(each.value.certificate_chain, null)
 
   lifecycle {
     create_before_destroy = true

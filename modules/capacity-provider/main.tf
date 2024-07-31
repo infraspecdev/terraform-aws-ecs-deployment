@@ -14,18 +14,18 @@ resource "aws_ecs_capacity_provider" "this" {
       for_each = try(each.value.managed_scaling, null) != null ? [1] : []
 
       content {
-        instance_warmup_period    = each.value.managed_scaling.instance_warmup_period
-        status                    = each.value.managed_scaling.status
-        target_capacity           = each.value.managed_scaling.target_capacity
-        minimum_scaling_step_size = each.value.managed_scaling.minimum_scaling_step_size
-        maximum_scaling_step_size = each.value.managed_scaling.maximum_scaling_step_size
+        instance_warmup_period    = try(each.value.managed_scaling.instance_warmup_period, null)
+        status                    = try(each.value.managed_scaling.status, null)
+        target_capacity           = try(each.value.managed_scaling.target_capacity, null)
+        minimum_scaling_step_size = try(each.value.managed_scaling.minimum_scaling_step_size, null)
+        maximum_scaling_step_size = try(each.value.managed_scaling.maximum_scaling_step_size, null)
       }
     }
 
-    managed_termination_protection = each.value.managed_termination_protection
+    managed_termination_protection = try(each.value.managed_termination_protection, null)
   }
 
-  tags = each.value.tags
+  tags = try(each.value.tags, {})
 }
 
 ################################################################################
@@ -43,8 +43,8 @@ resource "aws_ecs_cluster_capacity_providers" "this" {
 
     content {
       capacity_provider = aws_ecs_capacity_provider.this[default_capacity_provider_strategies.value.capacity_provider].name
-      base              = default_capacity_provider_strategies.value.base
-      weight            = default_capacity_provider_strategies.value.weight
+      base              = try(default_capacity_provider_strategies.value.base, null)
+      weight            = try(default_capacity_provider_strategies.value.weight, null)
     }
   }
 }

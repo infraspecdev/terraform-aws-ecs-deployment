@@ -5,6 +5,30 @@ locals {
     try(module.acm[0].imported_acm_certificates_arns, {}),
     try(module.acm[0].private_ca_issued_acm_certificates_arns, {})
   ) : {}
+
+  # ALB
+  alb_target_groups = {
+    for k, v in try(var.load_balancer.target_groups, {}) :
+    k => merge(
+      {
+        vpc_id = var.vpc_id
+      },
+      v
+    )
+  }
+  alb_listeners = {
+    for k, v in try(var.load_balancer.listeners, {}) :
+    k => merge(
+      {
+        certificate_arn = lookup(
+          local.acm_certificates_arns,
+          try(v.certificate, null) != null ? try(v.certificate, "") : "",
+          null
+        ) != null ? local.acm_certificates_arns[try(v.certificate, null)] : try(v.certificate_arn, null)
+      },
+      v
+    )
+  }
 }
 
 ################################################################################
@@ -38,7 +62,7 @@ resource "aws_ecs_service" "this" {
       elb_name = try(load_balancer.value.elb_name, null)
       target_group_arn = lookup(
         try(module.alb[0].target_groups_arns, {}),
-        try(load_balancer.value.target_group, ""),
+        try(load_balancer.value.target_group, null) != null ? try(load_balancer.value.target_group, "") : "",
         null
       ) != null ? try(module.alb[0].target_groups_arns, {})[try(load_balancer.value.target_group, null)] : try(load_balancer.value.target_group_arn, null)
       container_name = load_balancer.value.container_name
@@ -69,16 +93,6 @@ resource "aws_ecs_service" "this" {
         content {
           log_driver = var.service.service_connect_configuration.log_configuration.log_driver
           options    = try(var.service.service_connect_configuration.log_configuration.options, null)
-
-          dynamic "secret_option" {
-            for_each = try(var.service.service_connect_configuration.log_configuration.secret_option, [])
-            iterator = secret_option
-
-            content {
-              name       = secret_option.value.name
-              value_from = secret_option.value.value_from
-            }
-          }
         }
       }
 
@@ -97,28 +111,6 @@ resource "aws_ecs_service" "this" {
             content {
               port     = service.client_alias.port
               dns_name = try(service.client_alias.dns_name, null)
-            }
-          }
-
-          dynamic "timeout" {
-            for_each = length(try(service.value.timeout, {})) > 0 ? [1] : []
-
-            content {
-              idle_timeout_seconds        = try(service.value.timeout.idle_timeout_seconds, null)
-              per_request_timeout_seconds = try(service.value.timeout.per_request_timeout_seconds, null)
-            }
-          }
-
-          dynamic "tls" {
-            for_each = length(try(service.value.tls, {})) > 0 ? [1] : []
-
-            content {
-              kms_key  = try(service.value.tls.kms_key, null)
-              role_arn = try(service.value.tls.role_arn, null)
-
-              issuer_cert_authority {
-                aws_pca_authority_arn = try(service.value.tls.issuer_cert_authority.aws_pca_authority_arn, null)
-              }
             }
           }
         }
@@ -235,22 +227,9 @@ module "alb" {
   preserve_host_header       = try(var.load_balancer.preserve_host_header, null)
   enable_deletion_protection = try(var.load_balancer.enable_deletion_protection, null)
 
-  target_groups = {
-    for k, v in try(var.load_balancer.target_groups, {}) :
-    k => merge({
-      vpc_id = var.vpc_id
-    }, v)
-  }
+  target_groups = local.alb_target_groups
 
-  listeners = {
-    for k, v in try(var.load_balancer.listeners, {}) :
-    k => merge(
-      {
-        certificate_arn = lookup(local.acm_certificates_arns, try(v.certificate, ""), null) != null ? local.acm_certificates_arns[try(v.certificate, null)] : try(v.certificate_arn, null)
-      },
-      v
-    )
-  }
+  listeners = local.alb_listeners
 
   listener_rules = try(var.load_balancer.listener_rules, {})
 
