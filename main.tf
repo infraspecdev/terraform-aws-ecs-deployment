@@ -138,6 +138,15 @@ resource "aws_ecs_service" "this" {
     }
   }
 
+  dynamic "deployment_circuit_breaker" {
+    for_each = length(try(var.service.deployment_circuit_breaker, {})) > 0 ? [1] : []
+
+    content {
+      enable   = var.service.deployment_circuit_breaker.enabled
+      rollback = var.service.deployment_circuit_breaker.rollback
+    }
+  }
+
   tags = try(var.service.tags, {})
 }
 
