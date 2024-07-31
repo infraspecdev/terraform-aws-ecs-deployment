@@ -1,14 +1,7 @@
 name: Terraform Checks
 
 on:
-  push:
-    branches:
-      - main
-      - master
-  pull_request:
-    branches:
-      - main
-      - master
+  workflow_call:
 
 env:
   TERRAFORM_DOCS_VERSION: v0.18.0
