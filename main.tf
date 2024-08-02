@@ -1,10 +1,6 @@
 locals {
   # ACM
-  acm_certificates_arns = var.create_acm ? merge(
-    try(module.acm[0].amazon_issued_acm_certificates_arns, {}),
-    try(module.acm[0].imported_acm_certificates_arns, {}),
-    try(module.acm[0].private_ca_issued_acm_certificates_arns, {})
-  ) : {}
+  acm_certificates_arns = var.create_acm ? module.acm[0].amazon_issued_acm_certificates_arns : {}
 
   # ALB
   alb_target_groups = {
