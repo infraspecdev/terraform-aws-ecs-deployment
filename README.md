@@ -39,7 +39,7 @@ Terraform module to deploy production-ready applications and services on an exis
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_acm_amazon_issued_certificates"></a> [acm\_amazon\_issued\_certificates](#input\_acm\_amazon\_issued\_certificates) | Amazon-issued ACM certificates to create. | `any` | `{}` | no |
+| <a name="input_acm_certificates"></a> [acm\_certificates](#input\_acm\_certificates) | ACM certificates to create. | <pre>map(object({<br>    domain_name               = string<br>    subject_alternative_names = optional(list(string), [])<br>    validation_method         = optional(string)<br>    key_algorithm             = optional(string)<br>    validation_option = optional(object({<br>      domain_name       = string<br>      validation_domain = string<br>    }))<br>    tags                   = optional(map(string), {})<br>    record_zone_id         = string<br>    record_allow_overwrite = optional(bool)<br>  }))</pre> | `{}` | no |
 | <a name="input_capacity_provider_default_auto_scaling_group_arn"></a> [capacity\_provider\_default\_auto\_scaling\_group\_arn](#input\_capacity\_provider\_default\_auto\_scaling\_group\_arn) | ARN for this Auto Scaling Group. | `string` | `null` | no |
 | <a name="input_capacity_providers"></a> [capacity\_providers](#input\_capacity\_providers) | Capacity Providers to associate with the ECS Cluster. | `any` | `{}` | no |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | (Required) Name of the cluster. | `string` | n/a | yes |
@@ -56,6 +56,8 @@ Terraform module to deploy production-ready applications and services on an exis
 
 | Name | Description |
 |------|-------------|
+| <a name="output_acm_certificates_arns"></a> [acm\_certificates\_arns](#output\_acm\_certificates\_arns) | ARNs of the ACM certificates. |
+| <a name="output_acm_certificates_ids"></a> [acm\_certificates\_ids](#output\_acm\_certificates\_ids) | Identifiers of the ACM certificates. |
 | <a name="output_alb_arn"></a> [alb\_arn](#output\_alb\_arn) | ARN of the load balancer. |
 | <a name="output_alb_dns_name"></a> [alb\_dns\_name](#output\_alb\_dns\_name) | DNS name of the load balancer. |
 | <a name="output_alb_listener_rules_arns"></a> [alb\_listener\_rules\_arns](#output\_alb\_listener\_rules\_arns) | ARNs of the Listener Rules. |
@@ -65,8 +67,6 @@ Terraform module to deploy production-ready applications and services on an exis
 | <a name="output_alb_target_groups_arns"></a> [alb\_target\_groups\_arns](#output\_alb\_target\_groups\_arns) | ARNs of the Target Groups. |
 | <a name="output_alb_target_groups_ids"></a> [alb\_target\_groups\_ids](#output\_alb\_target\_groups\_ids) | Identifiers of the Target Groups. |
 | <a name="output_alb_zone_id"></a> [alb\_zone\_id](#output\_alb\_zone\_id) | Canonical hosted zone ID of the Load Balancer. |
-| <a name="output_amazon_issued_acm_certificates_arns"></a> [amazon\_issued\_acm\_certificates\_arns](#output\_amazon\_issued\_acm\_certificates\_arns) | ARNs of the Amazon issued ACM certificates. |
-| <a name="output_amazon_issued_acm_certificates_validation_records"></a> [amazon\_issued\_acm\_certificates\_validation\_records](#output\_amazon\_issued\_acm\_certificates\_validation\_records) | Validation Records of the Amazon issued ACM certificates. |
 | <a name="output_capacity_provider_arns"></a> [capacity\_provider\_arns](#output\_capacity\_provider\_arns) | ARNs for the ECS Capacity Providers. |
 | <a name="output_capacity_provider_ecs_cluster_capacity_providers_id"></a> [capacity\_provider\_ecs\_cluster\_capacity\_providers\_id](#output\_capacity\_provider\_ecs\_cluster\_capacity\_providers\_id) | Identifier for the ECS Cluster Capacity Providers. |
 | <a name="output_capacity_provider_ids"></a> [capacity\_provider\_ids](#output\_capacity\_provider\_ids) | Identifiers for the ECS Capacity Providers. |
