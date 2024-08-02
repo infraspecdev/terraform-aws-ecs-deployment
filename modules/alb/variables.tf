@@ -78,8 +78,8 @@ variable "listeners" {
     }))
     certificate_arn = optional(string)
     port            = optional(number)
-    protocol        = optional(string)
-    ssl_policy      = optional(string)
+    protocol        = optional(string, "HTTP")
+    ssl_policy      = optional(string, "ELBSecurityPolicy-TLS13-1-2-2021-06")
     tags            = optional(map(string), {})
   }))
 }
