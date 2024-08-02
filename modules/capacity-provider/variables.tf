@@ -35,7 +35,7 @@ variable "default_capacity_provider_strategies" {
   description = "(Optional) Set of capacity provider strategies to use by default for the cluster."
   type = list(object({
     capacity_provider = string
-    weight            = optional(number, 0)
+    weight            = optional(number, 1)
     base              = optional(number, 0)
   }))
   default = []
