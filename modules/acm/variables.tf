@@ -7,7 +7,7 @@ variable "amazon_issued_certificates" {
   type = map(object({
     domain_name               = string
     subject_alternative_names = optional(list(string), [])
-    validation_method         = optional(string, null)
+    validation_method         = optional(string, "DNS")
     key_algorithm             = optional(string, null)
     validation_option = optional(object({
       domain_name       = string
