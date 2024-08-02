@@ -156,6 +156,17 @@ resource "aws_ecs_service" "this" {
     }
   }
 
+  dynamic "service_registries" {
+    for_each = try(var.service.service_registries, null) != null ? [1] : []
+
+    content {
+      registry_arn   = var.service.service_registries.registry_arn
+      port           = try(var.service.service_registries.port, null)
+      container_name = try(var.service.service_registries.container_name, null)
+      container_port = try(var.service.service_registries.container_port, null)
+    }
+  }
+
   tags = try(var.service.tags, {})
 }
 
