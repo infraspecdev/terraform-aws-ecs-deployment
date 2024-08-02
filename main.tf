@@ -42,7 +42,7 @@ resource "aws_ecs_service" "this" {
   deployment_maximum_percent         = try(var.service.deployment_maximum_percent, null)
   deployment_minimum_healthy_percent = try(var.service.deployment_minimum_healthy_percent, null)
   desired_count                      = try(var.service.desired_count, null)
-  enable_ecs_managed_tags            = try(var.service.enable_ecs_managed_tags, true)
+  enable_ecs_managed_tags            = try(var.service.enable_ecs_managed_tags, null)
   enable_execute_command             = try(var.service.enable_execute_command, null)
   force_new_deployment               = try(var.service.force_new_deployment, null)
   health_check_grace_period_seconds  = try(var.service.health_check_grace_period_seconds, null)

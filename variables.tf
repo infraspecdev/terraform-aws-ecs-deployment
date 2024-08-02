@@ -14,7 +14,28 @@ variable "vpc_id" {
 
 variable "service" {
   description = "Configuration for ECS Service."
-  type        = any
+  type = object({
+    name                               = string
+    deployment_maximum_percent         = optional(number)
+    deployment_minimum_healthy_percent = optional(number)
+    desired_count                      = optional(number)
+    enable_ecs_managed_tags            = optional(bool, true)
+    enable_execute_command             = optional(bool)
+    force_new_deployment               = optional(bool, true)
+    health_check_grace_period_seconds  = optional(number)
+    iam_role                           = optional(string)
+    propagate_tags                     = optional(string)
+    scheduling_strategy                = optional(string)
+    triggers                           = optional(map(string))
+    wait_for_steady_state              = optional(bool)
+    load_balancer                      = optional(any)
+    network_configuration              = optional(any)
+    service_connect_configuration      = optional(any)
+    volume_configuration               = optional(any)
+    deployment_circuit_breaker         = optional(any)
+    service_registries                 = optional(any)
+    tags                               = optional(map(string), {})
+  })
 }
 
 ################################################################################
@@ -23,7 +44,22 @@ variable "service" {
 
 variable "task_definition" {
   description = "ECS Task Definition to use for running tasks."
-  type        = any
+  type = object({
+    container_definitions = any
+    family                = string
+    cpu                   = optional(string)
+    execution_role_arn    = optional(string)
+    ipc_mode              = optional(string)
+    memory                = optional(string)
+    network_mode          = optional(string, "awsvpc")
+    pid_mode              = optional(string)
+    skip_destroy          = optional(bool)
+    task_role_arn         = optional(string)
+    track_latest          = optional(bool)
+    runtime_platform      = optional(any)
+    volume                = optional(any)
+    tags                  = optional(map(string), {})
+  })
 }
 
 ################################################################################
@@ -66,8 +102,19 @@ variable "create_alb" {
 
 variable "load_balancer" {
   description = "Configuration for the Application Load Balancer."
-  type        = any
-  default     = {}
+  type = object({
+    name                       = optional(string)
+    internal                   = optional(bool, false)
+    subnets_ids                = optional(list(string), [])
+    security_groups_ids        = optional(list(string), [])
+    preserve_host_header       = optional(bool)
+    enable_deletion_protection = optional(bool, false)
+    target_groups              = optional(any, {})
+    listeners                  = optional(any, {})
+    listener_rules             = optional(any, {})
+    tags                       = optional(map(string), {})
+  })
+  default = {}
 }
 
 ################################################################################
