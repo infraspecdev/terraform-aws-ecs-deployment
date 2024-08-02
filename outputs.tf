@@ -20,14 +20,14 @@ output "ecs_task_definition_arn" {
 # Amazon Certificates Manager
 ################################################################################
 
-output "amazon_issued_acm_certificates_arns" {
-  description = "ARNs of the Amazon issued ACM certificates."
-  value       = try(module.acm[0].amazon_issued_acm_certificates_arns, null)
+output "acm_certificates_ids" {
+  description = "Identifiers of the ACM certificates."
+  value       = try({ for k, v in module.acm : k => v.acm_certificate_id }, null)
 }
 
-output "amazon_issued_acm_certificates_validation_records" {
-  description = "Validation Records of the Amazon issued ACM certificates."
-  value       = try(module.acm[0].amazon_issued_acm_certificates_validation_records, null)
+output "acm_certificates_arns" {
+  description = "ARNs of the ACM certificates."
+  value       = try({ for k, v in module.acm : k => v.acm_certificate_arn }, null)
 }
 
 ################################################################################

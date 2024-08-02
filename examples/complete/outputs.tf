@@ -66,7 +66,7 @@ output "listener_arn" {
 
 output "acm_amazon_issued_certificate_arn" {
   description = "ARN of the ACM Amazon-issued certificate for the base domain"
-  value       = module.ecs_deployment.amazon_issued_acm_certificates_arns["base_domain"]
+  value       = module.ecs_deployment.acm_certificates_arns["base_domain"]
 }
 
 ################################################################################

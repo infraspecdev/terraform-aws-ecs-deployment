@@ -1,7 +1,4 @@
 locals {
-  # ACM
-  acm_certificates_arns = var.create_acm ? module.acm[0].amazon_issued_acm_certificates_arns : {}
-
   # ALB
   alb_target_groups = {
     for k, v in try(var.load_balancer.target_groups, {}) :
@@ -17,10 +14,10 @@ locals {
     k => merge(
       {
         certificate_arn = lookup(
-          local.acm_certificates_arns,
+          var.acm_certificates,
           try(v.certificate, null) != null ? try(v.certificate, "") : "",
           null
-        ) != null ? local.acm_certificates_arns[try(v.certificate, null)] : try(v.certificate_arn, null)
+        ) != null ? module.acm[try(v.certificate, null)].acm_certificate_arn : try(v.certificate_arn, null)
       },
       v
     )
@@ -259,6 +256,8 @@ module "alb" {
   listener_rules = try(var.load_balancer.listener_rules, {})
 
   tags = try(var.load_balancer.tags, {})
+
+  depends_on = [module.acm]
 }
 
 ################################################################################
@@ -268,7 +267,16 @@ module "alb" {
 module "acm" {
   source = "./modules/acm"
 
-  count = var.create_acm ? 1 : 0
+  for_each = var.create_acm ? var.acm_certificates : {}
 
-  amazon_issued_certificates = try(var.acm_amazon_issued_certificates, {})
+  certificate_domain_name               = each.value.domain_name
+  certificate_subject_alternative_names = try(each.value.subject_alternative_names, null)
+  certificate_validation_method         = try(each.value.validation_method, null)
+  certificate_key_algorithm             = try(each.value.key_algorithm, null)
+  certificate_validation_option         = try(each.value.validation_option, null)
+
+  record_zone_id         = try(each.value.record_zone_id, null)
+  record_allow_overwrite = try(each.value.record_allow_overwrite, null)
+
+  tags = try(each.value.tags, {})
 }

@@ -5,7 +5,7 @@ Configuration in this directory creates:
 
 - ECS Service in a pre-configured ECS Cluster and corresponding ECS Capacity Providers
 - Internet-facing Application Load Balancer to access the deployed services, and
-- ACM to generate an Amazon-issued certificate for a base domain, and then create a Route53 A-type record with an endpoint
+- ACM to generate an Amazon-issued certificate for a base domain, set up Route53 Records for Certificate validation, and then create a Route53 A-type record with an endpoint
 
 ## Usage
 

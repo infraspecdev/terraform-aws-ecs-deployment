@@ -84,10 +84,11 @@ module "ecs_deployment" {
 
   # Amazon Certificates Manager
   create_acm = true
-  acm_amazon_issued_certificates = {
+  acm_certificates = {
     base_domain = {
-      domain_name       = var.base_domain
+      domain_name       = var.domain_name
       validation_method = local.acm_validation_method
+      record_zone_id    = data.aws_route53_zone.base_domain.zone_id
     }
   }
 
@@ -132,24 +133,7 @@ module "ecs_deployment" {
 ################################################################################
 
 data "aws_route53_zone" "base_domain" {
-  name = var.base_domain
-}
-
-resource "aws_route53_record" "endpoint" {
-  zone_id = data.aws_route53_zone.base_domain.zone_id
-  name    = var.endpoint
-  type    = "A"
-
-  alias {
-    name                   = module.ecs_deployment.alb_dns_name
-    zone_id                = module.ecs_deployment.alb_zone_id
-    evaluate_target_health = true
-  }
-}
-
-resource "aws_acm_certificate_validation" "base_domain_certificate" {
-  certificate_arn         = module.ecs_deployment.amazon_issued_acm_certificates_arns["base_domain"]
-  validation_record_fqdns = [aws_route53_record.endpoint.fqdn]
+  name = var.domain_name
 }
 
 ################################################################################

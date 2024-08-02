@@ -1,24 +1,31 @@
 ################################################################################
-# ACM Amazon issued certificates
+# ACM Certificate
 ################################################################################
 
-output "amazon_issued_acm_certificates_arns" {
-  description = "ARNs of the Amazon issued ACM certificates."
-  value       = { for k, v in aws_acm_certificate.amazon_issued : k => v.arn }
+output "acm_certificate_id" {
+  description = "ARN of the ACM certificate."
+  value       = aws_acm_certificate.this.id
 }
 
-output "amazon_issued_acm_certificates_validation_records" {
-  description = "Validation Records of the Amazon issued ACM certificates."
-  value = {
-    for k, v in aws_acm_certificate.amazon_issued :
-    k => [
-      for record in v.domain_validation_options :
-      {
-        name   = record.resource_record_name
-        type   = record.resource_record_type
-        value  = record.resource_record_value
-        domain = record.domain_name
-      }
-    ]
-  }
+output "acm_certificate_arn" {
+  description = "ARN of the ACM certificate."
+  value       = aws_acm_certificate.this.arn
+}
+
+################################################################################
+# Route53 Record
+################################################################################
+
+output "route53_records_ids" {
+  description = "Identifiers of the Validation Records of the ACM certificate."
+  value       = [for record in aws_route53_record.this : record.id]
+}
+
+################################################################################
+# ACM Certificate Validation
+################################################################################
+
+output "acm_certificate_validation_id" {
+  description = "Identifier of the ACM certificate validation resource."
+  value       = aws_acm_certificate_validation.this.id
 }

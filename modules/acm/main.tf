@@ -1,21 +1,31 @@
+locals {
+  acm_certificate_validation_records = [
+    for record in aws_acm_certificate.this.domain_validation_options :
+    {
+      name   = record.resource_record_name
+      type   = record.resource_record_type
+      value  = record.resource_record_value
+      domain = record.domain_name
+    }
+  ]
+}
+
 ################################################################################
-# ACM Amazon issued certificates
+# ACM Certificate
 ################################################################################
 
-resource "aws_acm_certificate" "amazon_issued" {
-  for_each = var.amazon_issued_certificates
-
-  domain_name               = try(each.value.domain_name, null)
-  subject_alternative_names = try(each.value.subject_alternative_names, null)
-  validation_method         = try(each.value.validation_method, null)
-  key_algorithm             = try(each.value.key_algorithm, null)
+resource "aws_acm_certificate" "this" {
+  domain_name               = var.certificate_domain_name
+  subject_alternative_names = try(var.certificate_subject_alternative_names, null)
+  validation_method         = try(var.certificate_validation_method, null)
+  key_algorithm             = try(var.certificate_key_algorithm, null)
 
   dynamic "validation_option" {
-    for_each = try(each.value.validation_option, null) != null ? [1] : []
+    for_each = try(var.certificate_validation_option, null) != null ? [1] : []
 
     content {
-      domain_name       = each.value.validation_option.domain_name
-      validation_domain = each.value.validation_option.validation_domain
+      domain_name       = var.certificate_validation_option.domain_name
+      validation_domain = var.certificate_validation_option.validation_domain
     }
   }
 
@@ -23,5 +33,25 @@ resource "aws_acm_certificate" "amazon_issued" {
     create_before_destroy = true
   }
 
-  tags = merge(var.tags, each.value.tags)
+  tags = var.tags
+}
+
+################################################################################
+# ACM Validation
+################################################################################
+
+resource "aws_route53_record" "this" {
+  for_each = local.acm_certificate_validation_records
+
+  zone_id         = var.record_zone_id
+  name            = each.value.name
+  type            = each.value.type
+  records         = [each.value.value]
+  ttl             = 60
+  allow_overwrite = var.record_allow_overwrite
+}
+
+resource "aws_acm_certificate_validation" "this" {
+  certificate_arn         = aws_acm_certificate.this.arn
+  validation_record_fqdns = [for route53_record in aws_route53_record.this : route53_record.fqdn]
 }

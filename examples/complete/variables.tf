@@ -118,12 +118,7 @@ variable "security_group_alb" {
   type        = string
 }
 
-variable "base_domain" {
-  description = "Base domain name for ACM"
-  type        = string
-}
-
-variable "endpoint" {
-  description = "DNS endpoint for the application"
+variable "domain_name" {
+  description = "Domain name for ACM"
   type        = string
 }

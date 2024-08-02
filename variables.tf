@@ -127,8 +127,20 @@ variable "create_acm" {
   default     = false
 }
 
-variable "acm_amazon_issued_certificates" {
-  description = "Amazon-issued ACM certificates to create."
-  type        = any
-  default     = {}
+variable "acm_certificates" {
+  description = "ACM certificates to create."
+  type = map(object({
+    domain_name               = string
+    subject_alternative_names = optional(list(string), [])
+    validation_method         = optional(string)
+    key_algorithm             = optional(string)
+    validation_option = optional(object({
+      domain_name       = string
+      validation_domain = string
+    }))
+    tags                   = optional(map(string), {})
+    record_zone_id         = string
+    record_allow_overwrite = optional(bool)
+  }))
+  default = {}
 }
