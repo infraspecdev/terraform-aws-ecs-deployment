@@ -22,12 +22,3 @@ output "amazon_issued_acm_certificates_validation_records" {
     ]
   }
 }
-
-################################################################################
-# ACM imported certificates
-################################################################################
-
-output "imported_acm_certificates_arns" {
-  description = "ARNs of the Imported ACM certificates."
-  value       = { for k, v in aws_acm_certificate.imported : k => v.arn }
-}

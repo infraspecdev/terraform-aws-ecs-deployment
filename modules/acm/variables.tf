@@ -18,17 +18,6 @@ variable "amazon_issued_certificates" {
   default = {}
 }
 
-variable "imported_certificates" {
-  description = "List of imported certificates to use to create ACM certificates."
-  type = map(object({
-    private_key       = string
-    certificate_body  = string
-    certificate_chain = optional(string, null)
-    tags              = optional(map(string), {})
-  }))
-  default = {}
-}
-
 variable "tags" {
   description = "(Optional) Map of tags to assign to the resource."
   type        = map(string)

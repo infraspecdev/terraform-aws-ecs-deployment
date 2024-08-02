@@ -132,9 +132,3 @@ variable "acm_amazon_issued_certificates" {
   type        = any
   default     = {}
 }
-
-variable "acm_imported_certificates" {
-  description = "Imported ACM certificates to create."
-  type        = any
-  default     = {}
-}

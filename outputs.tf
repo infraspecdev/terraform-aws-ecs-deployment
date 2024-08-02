@@ -30,11 +30,6 @@ output "amazon_issued_acm_certificates_validation_records" {
   value       = try(module.acm[0].amazon_issued_acm_certificates_validation_records, null)
 }
 
-output "imported_acm_certificates_arns" {
-  description = "ARNs of the Imported ACM certificates."
-  value       = try(module.acm[0].imported_acm_certificates_arns, null)
-}
-
 ################################################################################
 # Application Load Balancer
 ################################################################################

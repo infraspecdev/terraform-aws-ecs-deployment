@@ -25,21 +25,3 @@ resource "aws_acm_certificate" "amazon_issued" {
 
   tags = merge(var.tags, each.value.tags)
 }
-
-################################################################################
-# ACM imported certificates
-################################################################################
-
-resource "aws_acm_certificate" "imported" {
-  for_each = var.imported_certificates
-
-  private_key       = try(each.value.private_key, null)
-  certificate_body  = try(each.value.certificate_body, null)
-  certificate_chain = try(each.value.certificate_chain, null)
-
-  lifecycle {
-    create_before_destroy = true
-  }
-
-  tags = merge(var.tags, each.value.tags)
-}

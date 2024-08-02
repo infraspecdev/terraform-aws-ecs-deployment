@@ -275,5 +275,4 @@ module "acm" {
   count = var.create_acm ? 1 : 0
 
   amazon_issued_certificates = try(var.acm_amazon_issued_certificates, {})
-  imported_certificates      = try(var.acm_imported_certificates, {})
 }
