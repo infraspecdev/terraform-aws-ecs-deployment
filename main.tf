@@ -71,7 +71,7 @@ resource "aws_ecs_service" "this" {
   }
 
   dynamic "network_configuration" {
-    for_each = length(try(var.service.network_configuration, {})) > 0 ? [1] : []
+    for_each = try(var.service.network_configuration, null) != null ? [1] : []
 
     content {
       subnets          = var.service.network_configuration.subnets
@@ -81,14 +81,14 @@ resource "aws_ecs_service" "this" {
   }
 
   dynamic "service_connect_configuration" {
-    for_each = length(try(var.service.service_connect_configuration, {})) > 0 ? [1] : []
+    for_each = try(var.service.service_connect_configuration, null) != null ? [1] : []
 
     content {
       enabled   = var.service.service_connect_configuration.enabled
       namespace = try(var.service.service_connect_configuration.namespace, null)
 
       dynamic "log_configuration" {
-        for_each = length(try(var.service.service_connect_configuration.log_configuration, {})) > 0 ? [1] : []
+        for_each = try(var.service.service_connect_configuration.log_configuration, null) != null ? [1] : []
 
         content {
           log_driver = var.service.service_connect_configuration.log_configuration.log_driver
@@ -106,7 +106,7 @@ resource "aws_ecs_service" "this" {
           ingress_port_override = try(service.value.ingress_port_override, null)
 
           dynamic "client_alias" {
-            for_each = length(try(service.value.client_alias, {})) > 0 ? [1] : []
+            for_each = try(service.value.client_alias, null) != null ? [1] : []
 
             content {
               port     = service.value.client_alias.port
@@ -115,7 +115,7 @@ resource "aws_ecs_service" "this" {
           }
 
           dynamic "timeout" {
-            for_each = length(try(service.value.timeout, {})) > 0 ? [1] : []
+            for_each = try(service.value.timeout, null) != null ? [1] : []
 
             content {
               idle_timeout_seconds        = try(service.value.timeout.idle_timeout_seconds, null)
@@ -128,7 +128,7 @@ resource "aws_ecs_service" "this" {
   }
 
   dynamic "volume_configuration" {
-    for_each = length(try(var.service.volume_configuration, {})) > 0 ? [1] : []
+    for_each = try(var.service.volume_configuration, null) != null ? [1] : []
 
     content {
       name = var.service.volume_configuration.name
@@ -148,7 +148,7 @@ resource "aws_ecs_service" "this" {
   }
 
   dynamic "deployment_circuit_breaker" {
-    for_each = length(try(var.service.deployment_circuit_breaker, {})) > 0 ? [1] : []
+    for_each = try(var.service.deployment_circuit_breaker, null) != null ? [1] : []
 
     content {
       enable   = var.service.deployment_circuit_breaker.enabled
@@ -190,7 +190,7 @@ resource "aws_ecs_task_definition" "this" {
   track_latest             = try(var.task_definition.track_latest, null)
 
   dynamic "runtime_platform" {
-    for_each = length(try(var.task_definition.runtime_platform, {})) > 0 ? [1] : []
+    for_each = try(var.task_definition.runtime_platform, null) != null ? [1] : []
 
     content {
       operating_system_family = try(var.task_definition.runtime_platform.operating_system_family, null)
@@ -208,7 +208,7 @@ resource "aws_ecs_task_definition" "this" {
       host_path           = try(volume.value.host_path, null)
 
       dynamic "docker_volume_configuration" {
-        for_each = length(try(volume.value.docker_volume_configuration, {})) > 0 ? [1] : []
+        for_each = try(volume.value.docker_volume_configuration, null) != null ? [1] : []
 
         content {
           autoprovision = try(volume.value.docker_volume_configuration.autoprovision, null)
