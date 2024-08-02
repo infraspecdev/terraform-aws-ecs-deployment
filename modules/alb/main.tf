@@ -7,9 +7,9 @@ locals {
 ################################################################################
 
 resource "aws_lb" "this" {
-  name                       = try(var.name, null)
-  load_balancer_type         = try(local.load_balancer_type, null)
-  internal                   = try(var.internal, null)
+  name                       = var.name
+  load_balancer_type         = local.load_balancer_type
+  internal                   = var.internal
   subnets                    = var.subnets_ids
   security_groups            = var.security_groups_ids
   preserve_host_header       = var.preserve_host_header

@@ -5,7 +5,7 @@
 variable "name" {
   description = "(Optional) Name of the LB."
   type        = string
-  default     = ""
+  default     = null
 }
 
 variable "internal" {
@@ -28,7 +28,7 @@ variable "subnets_ids" {
 variable "preserve_host_header" {
   description = "(Optional) Whether the Application Load Balancer should preserve the Host header in the HTTP request and send it to the target without any change."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "enable_deletion_protection" {
