@@ -1,15 +1,3 @@
-locals {
-  acm_certificate_validation_records = [
-    for record in aws_acm_certificate.this.domain_validation_options :
-    {
-      name   = record.resource_record_name
-      type   = record.resource_record_type
-      value  = record.resource_record_value
-      domain = record.domain_name
-    }
-  ]
-}
-
 ################################################################################
 # ACM Certificate
 ################################################################################
@@ -41,7 +29,13 @@ resource "aws_acm_certificate" "this" {
 ################################################################################
 
 resource "aws_route53_record" "this" {
-  for_each = local.acm_certificate_validation_records
+  for_each = {
+    for record in aws_acm_certificate.this.domain_validation_options : record.domain_name => {
+      name  = record.resource_record_name
+      type  = record.resource_record_type
+      value = record.resource_record_value
+    }
+  }
 
   zone_id         = var.record_zone_id
   name            = each.value.name
@@ -49,8 +43,6 @@ resource "aws_route53_record" "this" {
   records         = [each.value.value]
   ttl             = 60
   allow_overwrite = var.record_allow_overwrite
-
-  depends_on = [aws_acm_certificate.this]
 }
 
 resource "aws_acm_certificate_validation" "this" {
