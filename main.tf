@@ -192,7 +192,7 @@ resource "aws_ecs_task_definition" "this" {
   }
 
   dynamic "volume" {
-    for_each = try(var.task_definition.volume, [])
+    for_each = try(var.task_definition.volume != null ? var.task_definition.volume : [], [])
     iterator = volume
 
     content {
