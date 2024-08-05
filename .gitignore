@@ -40,6 +40,7 @@ terraform.rc
 
 # Ignore editor configuration files
 .vscode
+.idea
 
 go.mod
 go.sum
