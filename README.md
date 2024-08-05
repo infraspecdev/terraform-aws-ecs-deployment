@@ -56,8 +56,10 @@ Terraform module to deploy production-ready applications and services on an exis
 
 | Name | Description |
 |------|-------------|
+| <a name="output_acm_certificate_validation_id"></a> [acm\_certificate\_validation\_id](#output\_acm\_certificate\_validation\_id) | Identifiers of the ACM certificates validation resources. |
 | <a name="output_acm_certificates_arns"></a> [acm\_certificates\_arns](#output\_acm\_certificates\_arns) | ARNs of the ACM certificates. |
 | <a name="output_acm_certificates_ids"></a> [acm\_certificates\_ids](#output\_acm\_certificates\_ids) | Identifiers of the ACM certificates. |
+| <a name="output_acm_route53_records_ids"></a> [acm\_route53\_records\_ids](#output\_acm\_route53\_records\_ids) | Identifiers of the Route53 Records for validation of the ACM certificates. |
 | <a name="output_alb_arn"></a> [alb\_arn](#output\_alb\_arn) | ARN of the load balancer. |
 | <a name="output_alb_dns_name"></a> [alb\_dns\_name](#output\_alb\_dns\_name) | DNS name of the load balancer. |
 | <a name="output_alb_listener_rules_arns"></a> [alb\_listener\_rules\_arns](#output\_alb\_listener\_rules\_arns) | ARNs of the Listener Rules. |

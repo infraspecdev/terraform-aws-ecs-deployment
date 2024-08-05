@@ -61,5 +61,5 @@ No modules.
 | <a name="output_acm_certificate_arn"></a> [acm\_certificate\_arn](#output\_acm\_certificate\_arn) | ARN of the ACM certificate. |
 | <a name="output_acm_certificate_id"></a> [acm\_certificate\_id](#output\_acm\_certificate\_id) | ARN of the ACM certificate. |
 | <a name="output_acm_certificate_validation_id"></a> [acm\_certificate\_validation\_id](#output\_acm\_certificate\_validation\_id) | Identifier of the ACM certificate validation resource. |
-| <a name="output_route53_records_ids"></a> [route53\_records\_ids](#output\_route53\_records\_ids) | Identifiers of the Validation Records of the ACM certificate. |
+| <a name="output_route53_record_id"></a> [route53\_record\_id](#output\_route53\_record\_id) | Identifier of the Route53 Record for validation of the ACM certificate. |
 <!-- END_TF_DOCS -->
