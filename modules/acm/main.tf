@@ -1,3 +1,12 @@
+locals {
+  acm_certificate_domain_validation_option = tolist(aws_acm_certificate.this.domain_validation_options)[0]
+  acm_certificate_validation_record = {
+    name  = local.acm_certificate_domain_validation_option.resource_record_name
+    type  = local.acm_certificate_domain_validation_option.resource_record_type
+    value = local.acm_certificate_domain_validation_option.resource_record_value
+  }
+}
+
 ################################################################################
 # ACM Certificate
 ################################################################################
@@ -29,23 +38,15 @@ resource "aws_acm_certificate" "this" {
 ################################################################################
 
 resource "aws_route53_record" "this" {
-  for_each = {
-    for record in aws_acm_certificate.this.domain_validation_options : record.domain_name => {
-      name  = record.resource_record_name
-      type  = record.resource_record_type
-      value = record.resource_record_value
-    }
-  }
-
   zone_id         = var.record_zone_id
-  name            = each.value.name
-  type            = each.value.type
-  records         = [each.value.value]
+  name            = local.acm_certificate_validation_record.name
+  type            = local.acm_certificate_validation_record.type
+  records         = [local.acm_certificate_validation_record.value]
   ttl             = 60
   allow_overwrite = var.record_allow_overwrite
 }
 
 resource "aws_acm_certificate_validation" "this" {
   certificate_arn         = aws_acm_certificate.this.arn
-  validation_record_fqdns = [for route53_record in aws_route53_record.this : route53_record.fqdn]
+  validation_record_fqdns = [aws_route53_record.this.fqdn]
 }

@@ -6,7 +6,7 @@ provider "aws" {
 # ACM
 ################################################################################
 
-run "amazon_issued_certificates_attributes_match" {
+run "acm_certificate_attributes_match" {
   command = plan
 
   module {
@@ -14,52 +14,50 @@ run "amazon_issued_certificates_attributes_match" {
   }
 
   variables {
-    amazon_issued_certificates = {
-      example = {
-        domain_name               = "example.domain"
-        subject_alternative_names = ["example_optional_name"]
-        validation_method         = "EMAIL"
-        key_algorithm             = "RSA_4096"
+    certificate_domain_name               = "example.domain"
+    certificate_subject_alternative_names = ["example_optional_name"]
+    certificate_validation_method         = "EMAIL"
+    certificate_key_algorithm             = "RSA_4096"
 
-        validation_option = {
-          domain_name       = "example.domain"
-          validation_domain = "me@example.domain"
-        }
+    certificate_validation_option = {
+      domain_name       = "example.domain"
+      validation_domain = "me@example.domain"
+    }
 
-        tags = {
-          Example = "Tag"
-        }
-      }
+    record_zone_id = "example_zone_id"
+
+    tags = {
+      Example = "Tag"
     }
   }
 
   assert {
-    condition     = aws_acm_certificate.amazon_issued["example"].domain_name == var.amazon_issued_certificates.example.domain_name
+    condition     = aws_acm_certificate.this.domain_name == var.certificate_domain_name
     error_message = "Domain name mismatch"
   }
 
   assert {
-    condition     = aws_acm_certificate.amazon_issued["example"].validation_method == var.amazon_issued_certificates.example.validation_method
+    condition     = aws_acm_certificate.this.validation_method == var.certificate_validation_method
     error_message = "Validation method mismatch"
   }
 
   assert {
-    condition     = aws_acm_certificate.amazon_issued["example"].key_algorithm == var.amazon_issued_certificates.example.key_algorithm
+    condition     = aws_acm_certificate.this.key_algorithm == var.certificate_key_algorithm
     error_message = "Key algorithm mismatch"
   }
 
   assert {
-    condition     = tolist(aws_acm_certificate.amazon_issued["example"].validation_option)[0].domain_name == var.amazon_issued_certificates.example.validation_option.domain_name
+    condition     = tolist(aws_acm_certificate.this.validation_option)[0].domain_name == var.certificate_validation_option.domain_name
     error_message = "Validation option domain name mismatch"
   }
 
   assert {
-    condition     = tolist(aws_acm_certificate.amazon_issued["example"].validation_option)[0].validation_domain == var.amazon_issued_certificates.example.validation_option.validation_domain
+    condition     = tolist(aws_acm_certificate.this.validation_option)[0].validation_domain == var.certificate_validation_option.validation_domain
     error_message = "Validation option validation domain mismatch"
   }
 
   assert {
-    condition     = aws_acm_certificate.amazon_issued["example"].tags == var.amazon_issued_certificates.example.tags
+    condition     = aws_acm_certificate.this.tags == var.tags
     error_message = "Tags mismatch"
   }
 }

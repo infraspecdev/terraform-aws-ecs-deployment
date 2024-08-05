@@ -30,6 +30,16 @@ output "acm_certificates_arns" {
   value       = try({ for k, v in module.acm : k => v.acm_certificate_arn }, null)
 }
 
+output "acm_route53_records_ids" {
+  description = "Identifiers of the Route53 Records for validation of the ACM certificates."
+  value       = try({ for k, v in module.acm : k => v.route53_record_id }, null)
+}
+
+output "acm_certificate_validation_id" {
+  description = "Identifiers of the ACM certificates validation resources."
+  value       = try({ for k, v in module.acm : k => v.acm_certificate_validation_id }, null)
+}
+
 ################################################################################
 # Application Load Balancer
 ################################################################################

@@ -16,9 +16,9 @@ output "acm_certificate_arn" {
 # Route53 Record
 ################################################################################
 
-output "route53_records_ids" {
-  description = "Identifiers of the Validation Records of the ACM certificate."
-  value       = [for record in aws_route53_record.this : record.id]
+output "route53_record_id" {
+  description = "Identifier of the Route53 Record for validation of the ACM certificate."
+  value       = aws_route53_record.this.id
 }
 
 ################################################################################
