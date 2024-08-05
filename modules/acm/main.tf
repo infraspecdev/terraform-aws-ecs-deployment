@@ -49,6 +49,8 @@ resource "aws_route53_record" "this" {
   records         = [each.value.value]
   ttl             = 60
   allow_overwrite = var.record_allow_overwrite
+
+  depends_on = [aws_acm_certificate.this]
 }
 
 resource "aws_acm_certificate_validation" "this" {
