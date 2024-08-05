@@ -132,15 +132,15 @@ variable "acm_certificates" {
   type = map(object({
     domain_name               = string
     subject_alternative_names = optional(list(string), [])
-    validation_method         = optional(string)
-    key_algorithm             = optional(string)
+    validation_method         = optional(string, "DNS")
+    key_algorithm             = optional(string, "RSA_2048")
     validation_option = optional(object({
       domain_name       = string
       validation_domain = string
     }))
     tags                   = optional(map(string), {})
     record_zone_id         = string
-    record_allow_overwrite = optional(bool)
+    record_allow_overwrite = optional(bool, true)
   }))
   default = {}
 }
