@@ -15,6 +15,28 @@ resource "aws_lb" "this" {
   preserve_host_header       = var.preserve_host_header
   enable_deletion_protection = var.enable_deletion_protection
 
+  dynamic "access_logs" {
+    for_each = var.access_logs != null ? [var.access_logs] : []
+    iterator = access_log
+
+    content {
+      bucket  = access_log.value.bucket
+      enabled = access_log.value.enabled
+      prefix  = access_log.value.prefix
+    }
+  }
+
+  dynamic "connection_logs" {
+    for_each = var.connection_logs != null ? [var.connection_logs] : []
+    iterator = connection_log
+
+    content {
+      bucket  = connection_log.value.bucket
+      enabled = connection_log.value.enabled
+      prefix  = connection_log.value.prefix
+    }
+  }
+
   tags = var.tags
 }
 

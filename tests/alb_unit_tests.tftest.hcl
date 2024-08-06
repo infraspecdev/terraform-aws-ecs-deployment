@@ -21,6 +21,18 @@ run "lb_attributes_match" {
     preserve_host_header       = true
     enable_deletion_protection = true
 
+    access_logs = {
+      bucket  = "example-access-logs-bucket"
+      enabled = true
+      prefix  = "example-access-logs-bucket-prefix"
+    }
+
+    connection_logs = {
+      bucket  = "example-connection-logs-bucket"
+      enabled = true
+      prefix  = "example-connection-logs-bucket-prefix"
+    }
+
     listeners = {}
 
     tags = {
@@ -55,6 +67,16 @@ run "lb_attributes_match" {
   assert {
     condition     = aws_lb.this.enable_deletion_protection == var.enable_deletion_protection
     error_message = "Enable deletion protection mismatch"
+  }
+
+  assert {
+    condition     = aws_lb.this.access_logs[0] == var.access_logs
+    error_message = "Access logs mismatch"
+  }
+
+  assert {
+    condition     = aws_lb.this.connection_logs[0] == var.connection_logs
+    error_message = "Connection logs mismatch"
   }
 
   assert {

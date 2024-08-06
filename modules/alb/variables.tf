@@ -37,6 +37,26 @@ variable "enable_deletion_protection" {
   default     = false
 }
 
+variable "access_logs" {
+  description = "(Optional) Access Logs block."
+  type = object({
+    bucket  = string
+    enabled = optional(bool, true)
+    prefix  = optional(string, null)
+  })
+  default = null
+}
+
+variable "connection_logs" {
+  description = "(Optional) Connection Logs block."
+  type = object({
+    bucket  = string
+    enabled = optional(bool, false)
+    prefix  = optional(string, null)
+  })
+  default = null
+}
+
 variable "tags" {
   description = "(Optional) Map of tags to assign to the resource."
   type        = map(string)
