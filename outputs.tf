@@ -90,6 +90,20 @@ output "alb_listener_rules_arns" {
 }
 
 ################################################################################
+# S3 Bucket
+################################################################################
+
+output "s3_bucket_id" {
+  description = "Name of the bucket."
+  value       = try(module.s3_bucket[0].bucket_id, null)
+}
+
+output "s3_bucket_arn" {
+  description = "ARN of the bucket."
+  value       = try(module.s3_bucket[0].bucket_arn, null)
+}
+
+################################################################################
 # Capacity Provider
 ################################################################################
 

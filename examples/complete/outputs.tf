@@ -42,12 +42,12 @@ output "alb_arn" {
 
 output "target_group_id" {
   description = "Identifier of the Target Group instances"
-  value       = module.ecs_deployment.alb_target_groups_ids["this"]
+  value       = module.ecs_deployment.alb_target_groups_ids[local.target_group_key_name]
 }
 
 output "target_group_arn" {
   description = "ARN of the Target Group instances"
-  value       = module.ecs_deployment.alb_target_groups_arns["this"]
+  value       = module.ecs_deployment.alb_target_groups_arns[local.target_group_key_name]
 }
 
 output "listener_id" {

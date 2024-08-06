@@ -1,5 +1,15 @@
 locals {
   # ALB
+  alb_access_logs_default_s3_configuration = var.create_s3_bucket_for_alb_logging ? {
+    bucket  = module.s3_bucket[0].bucket_id
+    enabled = true
+    prefix  = var.s3_bucket_access_logs_prefix
+  } : null
+  alb_connection_logs_default_s3_configuration = var.create_s3_bucket_for_alb_logging ? {
+    bucket  = module.s3_bucket[0].bucket_id
+    enabled = true
+    prefix  = var.s3_bucket_connection_logs_prefix
+  } : null
   alb_target_groups = {
     for k, v in try(var.load_balancer.target_groups, {}) :
     k => merge(
@@ -249,6 +259,9 @@ module "alb" {
   preserve_host_header       = try(var.load_balancer.preserve_host_header, null)
   enable_deletion_protection = try(var.load_balancer.enable_deletion_protection, null)
 
+  access_logs     = var.load_balancer.access_logs != null ? var.load_balancer.access_logs : local.alb_access_logs_default_s3_configuration
+  connection_logs = var.load_balancer.connection_logs != null ? var.load_balancer.connection_logs : local.alb_connection_logs_default_s3_configuration
+
   target_groups = local.alb_target_groups
 
   listeners = local.alb_listeners
@@ -258,6 +271,88 @@ module "alb" {
   tags = try(var.load_balancer.tags, {})
 
   depends_on = [module.acm]
+}
+
+################################################################################
+# S3 Bucket Sub-module
+################################################################################
+
+data "aws_elb_service_account" "this" {}
+
+module "s3_bucket" {
+  source = "./modules/s3-bucket"
+
+  count = var.create_s3_bucket_for_alb_logging ? 1 : 0
+
+  bucket               = var.s3_bucket_name
+  bucket_force_destroy = var.s3_bucket_force_destroy
+
+  bucket_policies = {
+    alb-logs = {
+      id = "${var.s3_bucket_policy_id_prefix}-logs"
+
+      statements = [
+        {
+          sid = "AllowAccessToS3Bucket"
+
+          effect = "Allow"
+          resources = [
+            "${module.s3_bucket[0].bucket_arn}/*",
+          ]
+          actions = [
+            "s3:PutObject",
+          ]
+
+          principals = [
+            {
+              identifiers = [
+                data.aws_elb_service_account.this.arn
+              ]
+              type = "AWS"
+            }
+          ]
+        },
+        {
+          sid = "AllowPutObjectToS3Bucket"
+
+          effect = "Allow"
+          resources = [
+            "${module.s3_bucket[0].bucket_arn}/*"
+          ]
+          actions = [
+            "s3:PutObject"
+          ]
+
+          principals = [
+            {
+              identifiers = ["delivery.logs.amazonaws.com"]
+              type        = "Service"
+            }
+          ]
+        },
+        {
+          sid = "AllowGetBucketAclFromS3Bucket"
+
+          effect = "Allow"
+          resources = [
+            module.s3_bucket[0].bucket_arn
+          ]
+          actions = [
+            "s3:GetBucketAcl"
+          ]
+
+          principals = [
+            {
+              identifiers = ["delivery.logs.amazonaws.com"]
+              type        = "Service"
+            }
+          ]
+        }
+      ]
+    }
+  }
+
+  tags = var.s3_bucket_tags
 }
 
 ################################################################################

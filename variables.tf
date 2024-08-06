@@ -109,12 +109,66 @@ variable "load_balancer" {
     security_groups_ids        = optional(list(string), [])
     preserve_host_header       = optional(bool)
     enable_deletion_protection = optional(bool, false)
+    access_logs                = optional(any, null)
+    connection_logs            = optional(any, null)
     target_groups              = optional(any, {})
     listeners                  = optional(any, {})
     listener_rules             = optional(any, {})
     tags                       = optional(map(string), {})
   })
   default = {}
+}
+
+################################################################################
+# S3 Bucket
+################################################################################
+
+variable "create_s3_bucket_for_alb_logging" {
+  description = "(Optional) Creates S3 bucket for storing ALB Access and Connection Logs."
+  type        = bool
+  nullable    = false
+  default     = true
+}
+
+variable "s3_bucket_name" {
+  description = "(Optional, Forces new resource) Name of the bucket."
+  type        = string
+  default     = null
+}
+
+variable "s3_bucket_force_destroy" {
+  description = "(Optional, Default:false) Boolean that indicates all objects (including any locked objects) should be deleted from the bucket when the bucket is destroyed so that the bucket can be destroyed without error."
+  type        = bool
+  nullable    = false
+  default     = false
+}
+
+variable "s3_bucket_policy_id_prefix" {
+  description = "(Optional) - Prefix of the ID for the policy document."
+  type        = string
+  nullable    = false
+  default     = "ecs-deployment-alb-"
+}
+
+variable "s3_bucket_access_logs_prefix" {
+  description = "(Optional) - Prefix for storing ALB access logs in the S3 bucket."
+  type        = string
+  nullable    = false
+  default     = "alb-access-logs"
+}
+
+variable "s3_bucket_connection_logs_prefix" {
+  description = "(Optional) - Prefix for storing ALB connection logs in the S3 bucket."
+  type        = string
+  nullable    = false
+  default     = "alb-connection-logs"
+}
+
+variable "s3_bucket_tags" {
+  description = "(Optional) Map of tags to assign to the bucket."
+  type        = map(string)
+  nullable    = false
+  default     = {}
 }
 
 ################################################################################

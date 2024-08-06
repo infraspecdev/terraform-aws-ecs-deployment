@@ -118,6 +118,16 @@ variable "security_group_alb" {
   type        = string
 }
 
+variable "s3_bucket_force_destroy" {
+  description = "(Optional, Default:false) Boolean that indicates all objects (including any locked objects) should be deleted from the bucket when the bucket is destroyed so that the bucket can be destroyed without error."
+  type        = bool
+}
+
+variable "base_domain" {
+  description = "Base domain for ACM"
+  type        = string
+}
+
 variable "domain_name" {
   description = "Domain name for ACM"
   type        = string

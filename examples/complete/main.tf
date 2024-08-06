@@ -1,6 +1,6 @@
-################################################################################
-# Locals
-################################################################################
+provider "aws" {
+  region = "ap-south-1"
+}
 
 locals {
   task_definition_network_mode = "awsvpc"
@@ -12,6 +12,7 @@ locals {
 
   alb_internal = false
 
+  target_group_key_name    = "default-nginx"
   target_group_target_type = "ip"
 
   listener_default_action_type = "forward"
@@ -40,7 +41,7 @@ module "ecs_deployment" {
 
     load_balancer = [
       {
-        target_group   = "target_group"
+        target_group   = local.target_group_key_name
         container_name = var.container_name
         container_port = var.container_port
       }
@@ -70,8 +71,9 @@ module "ecs_deployment" {
   capacity_provider_default_auto_scaling_group_arn = var.asg_arn
   capacity_providers = {
     capacity_provider = {
-      name            = var.capacity_provider_name
-      managed_scaling = var.capacity_provider_managed_scaling
+      name                           = var.capacity_provider_name
+      managed_termination_protection = "DISABLED"
+      managed_scaling                = var.capacity_provider_managed_scaling
     }
   }
   default_capacity_providers_strategies = [
@@ -100,7 +102,7 @@ module "ecs_deployment" {
     subnets_ids         = var.public_subnets
 
     target_groups = {
-      target_group = {
+      (local.target_group_key_name) = {
         name        = var.target_group_name
         port        = var.container_port
         protocol    = var.target_group_protocol
@@ -111,7 +113,7 @@ module "ecs_deployment" {
     }
 
     listeners = {
-      listener = {
+      this = {
         port        = var.listener_port
         protocol    = "HTTPS"
         certificate = "base_domain"
@@ -120,12 +122,15 @@ module "ecs_deployment" {
         default_action = [
           {
             type         = local.listener_default_action_type
-            target_group = var.target_group_name
+            target_group = local.target_group_key_name
           }
         ]
       }
     }
   }
+
+  # S3 Bucket
+  s3_bucket_force_destroy = var.s3_bucket_force_destroy
 }
 
 ################################################################################
@@ -133,7 +138,7 @@ module "ecs_deployment" {
 ################################################################################
 
 data "aws_route53_zone" "base_domain" {
-  name = var.domain_name
+  name = var.base_domain
 }
 
 ################################################################################
