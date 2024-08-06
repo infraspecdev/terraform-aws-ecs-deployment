@@ -39,6 +39,7 @@ variable "bucket_policies" {
     id      = optional(string, null)
     version = optional(string, null)
     statements = optional(list(object({
+      sid       = optional(string, null)
       actions   = optional(set(string), [])
       effect    = optional(string, "Allow")
       resources = optional(set(string), [])

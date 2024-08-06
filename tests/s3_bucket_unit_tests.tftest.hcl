@@ -78,6 +78,7 @@ run "iam_policy_document_attributes_match" {
 
         statements = [
           {
+            sid = "example-sid"
             actions = [
               "s3:PutObject"
             ]
@@ -116,6 +117,11 @@ run "iam_policy_document_attributes_match" {
   assert {
     condition     = length(data.aws_iam_policy_document.this["example-policy"].statement) == 1
     error_message = "Statement count mismatch"
+  }
+
+  assert {
+    condition     = data.aws_iam_policy_document.this["example-policy"].statement[0].sid == var.bucket_policies["example-policy"].statements[0].sid
+    error_message = "Statement sid mismatch"
   }
 
   assert {
