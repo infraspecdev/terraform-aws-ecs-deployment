@@ -154,7 +154,7 @@ resource "aws_ecs_service" "this" {
     for_each = try(var.service.deployment_circuit_breaker, null) != null ? [1] : []
 
     content {
-      enable   = var.service.deployment_circuit_breaker.enabled
+      enable   = var.service.deployment_circuit_breaker.enable
       rollback = var.service.deployment_circuit_breaker.rollback
     }
   }
