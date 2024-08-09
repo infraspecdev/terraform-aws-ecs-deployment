@@ -58,7 +58,7 @@ resource "aws_ecs_service" "this" {
   wait_for_steady_state              = try(var.service.wait_for_steady_state, null)
 
   dynamic "load_balancer" {
-    for_each = try(var.service.load_balancer, [])
+    for_each = try(var.service.load_balancer != null ? var.service.load_balancer : [], [])
     iterator = load_balancer
 
     content {
