@@ -16,10 +16,11 @@ variable "capacity_providers" {
         maximum_scaling_step_size = optional(number)
       })
     )
-    managed_termination_protection = optional(string, "ENABLED")
+    managed_termination_protection = optional(string, "DISABLED")
     tags                           = optional(map(string), {})
   }))
-  default = {}
+  nullable = false
+  default  = {}
 }
 
 ################################################################################
@@ -29,6 +30,7 @@ variable "capacity_providers" {
 variable "ecs_cluster_name" {
   description = "(Required) Name of the cluster."
   type        = string
+  nullable    = false
 }
 
 variable "default_capacity_provider_strategies" {
@@ -38,7 +40,8 @@ variable "default_capacity_provider_strategies" {
     weight            = optional(number, 1)
     base              = optional(number, 0)
   }))
-  default = []
+  nullable = false
+  default  = []
 
   validation {
     condition     = alltrue([for e in var.default_capacity_provider_strategies : e.weight >= 0])
@@ -54,6 +57,7 @@ variable "default_capacity_provider_strategies" {
 variable "default_auto_scaling_group_arn" {
   description = "ARN for this Auto Scaling Group."
   type        = string
+  nullable    = false
 
   validation {
     condition     = startswith(var.default_auto_scaling_group_arn, "arn:")
