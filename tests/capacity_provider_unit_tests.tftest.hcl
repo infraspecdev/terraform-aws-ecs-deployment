@@ -71,7 +71,7 @@ run "ecs_capacity_provider_attributes_match" {
   }
 
   assert {
-    condition     = aws_ecs_capacity_provider.this["example"].auto_scaling_group_provider[0].managed_termination_protection == "ENABLED"
+    condition     = aws_ecs_capacity_provider.this["example"].auto_scaling_group_provider[0].managed_termination_protection == "DISABLED"
     error_message = "Managed termination protection mismatch"
   }
 
