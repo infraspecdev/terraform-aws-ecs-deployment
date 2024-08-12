@@ -10,7 +10,7 @@ This sub-module creates:
 
 ### ECS Capacity Provider
 
-- The `managed_termination_protection` is enabled by default as recommended (which enables termination protection to container instances), and can be disabled if required.
+- The `managed_termination_protection` is disabled by default as recommended (which enables termination protection to container instances), and can be enabled if required. (Note: Enabling this option requires the `protect_from_scale_in` to be enabled on the Autoscaling group.)
 
 ### ECS Cluster Capacity Providers
 
@@ -49,7 +49,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_capacity_providers"></a> [capacity\_providers](#input\_capacity\_providers) | Capacity Providers to associate with the ECS Cluster. | <pre>map(object({<br>    name                   = string<br>    auto_scaling_group_arn = optional(string)<br>    managed_scaling = optional(<br>      object({<br>        instance_warmup_period    = optional(number)<br>        status                    = optional(string)<br>        target_capacity           = optional(number)<br>        minimum_scaling_step_size = optional(number)<br>        maximum_scaling_step_size = optional(number)<br>      })<br>    )<br>    managed_termination_protection = optional(string, "ENABLED")<br>    tags                           = optional(map(string), {})<br>  }))</pre> | `{}` | no |
+| <a name="input_capacity_providers"></a> [capacity\_providers](#input\_capacity\_providers) | Capacity Providers to associate with the ECS Cluster. | <pre>map(object({<br>    name                   = string<br>    auto_scaling_group_arn = optional(string)<br>    managed_scaling = optional(<br>      object({<br>        instance_warmup_period    = optional(number)<br>        status                    = optional(string)<br>        target_capacity           = optional(number)<br>        minimum_scaling_step_size = optional(number)<br>        maximum_scaling_step_size = optional(number)<br>      })<br>    )<br>    managed_termination_protection = optional(string, "DISABLED")<br>    tags                           = optional(map(string), {})<br>  }))</pre> | `{}` | no |
 | <a name="input_default_auto_scaling_group_arn"></a> [default\_auto\_scaling\_group\_arn](#input\_default\_auto\_scaling\_group\_arn) | ARN for this Auto Scaling Group. | `string` | n/a | yes |
 | <a name="input_default_capacity_provider_strategies"></a> [default\_capacity\_provider\_strategies](#input\_default\_capacity\_provider\_strategies) | (Optional) Set of capacity provider strategies to use by default for the cluster. | <pre>list(object({<br>    capacity_provider = string<br>    weight            = optional(number, 1)<br>    base              = optional(number, 0)<br>  }))</pre> | `[]` | no |
 | <a name="input_ecs_cluster_name"></a> [ecs\_cluster\_name](#input\_ecs\_cluster\_name) | (Required) Name of the cluster. | `string` | n/a | yes |

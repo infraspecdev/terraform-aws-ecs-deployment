@@ -8,6 +8,8 @@ This sub-module creates the Amazon-issued certificate for a given domain with `v
 ### ACM Certificate
 
 - The `validation_method` is set to `DNS` as the recommended method, and can be overridden to use `EMAIL` method if required.
+- The `validation_method` is not marked as nullable, and is a required attribute for Amazon-issued ACM certificates.
+- The `key_algorithm` is set to `RSA_2048` as the default algorithm, and can be overridden to specify a different algorithm if required.
 
 ### Route53 Record
 
@@ -46,7 +48,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_certificate_domain_name"></a> [certificate\_domain\_name](#input\_certificate\_domain\_name) | (Required) Domain name for which the certificate should be issued. | `string` | n/a | yes |
-| <a name="input_certificate_key_algorithm"></a> [certificate\_key\_algorithm](#input\_certificate\_key\_algorithm) | (Optional) Specifies the algorithm of the public and private key pair that your Amazon issued certificate uses to encrypt data. | `string` | `null` | no |
+| <a name="input_certificate_key_algorithm"></a> [certificate\_key\_algorithm](#input\_certificate\_key\_algorithm) | (Optional) Specifies the algorithm of the public and private key pair that your Amazon issued certificate uses to encrypt data. | `string` | `"RSA_2048"` | no |
 | <a name="input_certificate_subject_alternative_names"></a> [certificate\_subject\_alternative\_names](#input\_certificate\_subject\_alternative\_names) | (Optional) Set of domains that should be SANs in the issued certificate. | `list(string)` | `[]` | no |
 | <a name="input_certificate_validation_method"></a> [certificate\_validation\_method](#input\_certificate\_validation\_method) | (Optional) Which method to use for validation. DNS or EMAIL are valid. | `string` | `"DNS"` | no |
 | <a name="input_certificate_validation_option"></a> [certificate\_validation\_option](#input\_certificate\_validation\_option) | (Optional) Configuration block used to specify information about the initial validation of each domain name. | <pre>object({<br>    domain_name       = string<br>    validation_domain = string<br>  })</pre> | `null` | no |
