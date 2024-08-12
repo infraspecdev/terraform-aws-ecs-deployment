@@ -1,4 +1,10 @@
 locals {
+  # ECS Service
+  ecs_service_launch_type = "EC2"
+
+  # ECS Task Definition
+  ecs_task_definition_requires_compatibilities = ["EC2"]
+
   # ALB
   alb_access_logs_default_s3_configuration = var.create_s3_bucket_for_alb_logging ? {
     bucket  = module.s3_bucket[0].bucket_id
@@ -10,6 +16,7 @@ locals {
     enabled = true
     prefix  = var.s3_bucket_connection_logs_prefix
   } : null
+
   alb_target_groups = {
     for k, v in try(var.load_balancer.target_groups, {}) :
     k => merge(
@@ -32,6 +39,10 @@ locals {
       v
     )
   }
+
+  # S3
+  create_elb_service_account_data_source = var.s3_elb_service_account_arn == null
+  elb_service_account_arn                = local.create_elb_service_account_data_source ? data.aws_elb_service_account.this[0].arn : var.s3_elb_service_account_arn
 }
 
 ################################################################################
@@ -50,7 +61,7 @@ resource "aws_ecs_service" "this" {
   force_new_deployment               = try(var.service.force_new_deployment, null)
   health_check_grace_period_seconds  = try(var.service.health_check_grace_period_seconds, null)
   iam_role                           = try(var.service.iam_role, null)
-  launch_type                        = "EC2"
+  launch_type                        = local.ecs_service_launch_type
   propagate_tags                     = try(var.service.propagate_tags, null)
   scheduling_strategy                = try(var.service.scheduling_strategy, null)
   task_definition                    = aws_ecs_task_definition.this.id
@@ -187,7 +198,7 @@ resource "aws_ecs_task_definition" "this" {
   memory                   = try(var.task_definition.memory, null)
   network_mode             = try(var.task_definition.network_mode, null)
   pid_mode                 = try(var.task_definition.pid_mode, null)
-  requires_compatibilities = ["EC2"]
+  requires_compatibilities = local.ecs_task_definition_requires_compatibilities
   skip_destroy             = try(var.task_definition.skip_destroy, null)
   task_role_arn            = try(var.task_definition.task_role_arn, null)
   track_latest             = try(var.task_definition.track_latest, null)
@@ -228,19 +239,26 @@ resource "aws_ecs_task_definition" "this" {
 }
 
 ################################################################################
-# Capacity Provider Sub-module
+# Amazon Certificates Manager Sub-module
 ################################################################################
 
-module "capacity_provider" {
-  source = "./modules/capacity-provider"
+module "acm" {
+  source = "./modules/acm"
 
-  count = var.create_capacity_provider ? 1 : 0
+  for_each = var.create_acm ? var.acm_certificates : {}
 
-  ecs_cluster_name               = var.cluster_name
-  default_auto_scaling_group_arn = var.capacity_provider_default_auto_scaling_group_arn
+  # ACM Certificate
+  certificate_domain_name               = each.value.domain_name
+  certificate_subject_alternative_names = try(each.value.subject_alternative_names, null)
+  certificate_validation_method         = try(each.value.validation_method, null)
+  certificate_key_algorithm             = try(each.value.key_algorithm, null)
+  certificate_validation_option         = try(each.value.validation_option, null)
 
-  capacity_providers                   = var.capacity_providers
-  default_capacity_provider_strategies = var.default_capacity_providers_strategies
+  # Route53 Record
+  record_zone_id         = try(each.value.record_zone_id, null)
+  record_allow_overwrite = try(each.value.record_allow_overwrite, null)
+
+  tags = try(each.value.tags, {})
 }
 
 ################################################################################
@@ -252,20 +270,23 @@ module "alb" {
 
   count = var.create_alb ? 1 : 0
 
+  # Load Balancer
   name                       = try(var.load_balancer.name, null)
   internal                   = try(var.load_balancer.internal, null)
   subnets_ids                = try(var.load_balancer.subnets_ids, [])
   security_groups_ids        = try(var.load_balancer.security_groups_ids, [])
   preserve_host_header       = try(var.load_balancer.preserve_host_header, null)
   enable_deletion_protection = try(var.load_balancer.enable_deletion_protection, null)
+  access_logs                = var.load_balancer.access_logs != null ? var.load_balancer.access_logs : local.alb_access_logs_default_s3_configuration
+  connection_logs            = var.load_balancer.connection_logs != null ? var.load_balancer.connection_logs : local.alb_connection_logs_default_s3_configuration
 
-  access_logs     = var.load_balancer.access_logs != null ? var.load_balancer.access_logs : local.alb_access_logs_default_s3_configuration
-  connection_logs = var.load_balancer.connection_logs != null ? var.load_balancer.connection_logs : local.alb_connection_logs_default_s3_configuration
-
+  # LB Target Group
   target_groups = local.alb_target_groups
 
+  # LB Listener
   listeners = local.alb_listeners
 
+  # LB Listener Rule
   listener_rules = try(var.load_balancer.listener_rules, {})
 
   tags = try(var.load_balancer.tags, {})
@@ -274,19 +295,42 @@ module "alb" {
 }
 
 ################################################################################
+# Capacity Provider Sub-module
+################################################################################
+
+module "capacity_provider" {
+  source = "./modules/capacity-provider"
+
+  count = var.create_capacity_provider ? 1 : 0
+
+  ecs_cluster_name = var.cluster_name
+
+  # ECS Capacity Provider
+  capacity_providers             = var.capacity_providers
+  default_auto_scaling_group_arn = var.capacity_provider_default_auto_scaling_group_arn
+
+  # ECS Cluster Capacity Providers
+  default_capacity_provider_strategies = var.default_capacity_providers_strategies
+}
+
+################################################################################
 # S3 Bucket Sub-module
 ################################################################################
 
-data "aws_elb_service_account" "this" {}
+data "aws_elb_service_account" "this" {
+  count = local.create_elb_service_account_data_source ? 1 : 0
+}
 
 module "s3_bucket" {
   source = "./modules/s3-bucket"
 
   count = var.create_s3_bucket_for_alb_logging ? 1 : 0
 
+  # S3 Bucket
   bucket               = var.s3_bucket_name
   bucket_force_destroy = var.s3_bucket_force_destroy
 
+  # S3 Bucket Policy
   bucket_policies = {
     alb-logs = {
       id = "${var.s3_bucket_policy_id_prefix}-logs"
@@ -306,7 +350,7 @@ module "s3_bucket" {
           principals = [
             {
               identifiers = [
-                data.aws_elb_service_account.this.arn
+                local.elb_service_account_arn
               ]
               type = "AWS"
             }
@@ -353,25 +397,4 @@ module "s3_bucket" {
   }
 
   tags = var.s3_bucket_tags
-}
-
-################################################################################
-# Amazon Certificates Manager Sub-module
-################################################################################
-
-module "acm" {
-  source = "./modules/acm"
-
-  for_each = var.create_acm ? var.acm_certificates : {}
-
-  certificate_domain_name               = each.value.domain_name
-  certificate_subject_alternative_names = try(each.value.subject_alternative_names, null)
-  certificate_validation_method         = try(each.value.validation_method, null)
-  certificate_key_algorithm             = try(each.value.key_algorithm, null)
-  certificate_validation_option         = try(each.value.validation_option, null)
-
-  record_zone_id         = try(each.value.record_zone_id, null)
-  record_allow_overwrite = try(each.value.record_allow_overwrite, null)
-
-  tags = try(each.value.tags, {})
 }

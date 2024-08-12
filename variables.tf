@@ -36,6 +36,7 @@ variable "service" {
     service_registries                 = optional(any, null)
     tags                               = optional(map(string), {})
   })
+  nullable = false
 }
 
 ################################################################################
@@ -60,6 +61,7 @@ variable "task_definition" {
     volume                = optional(any, null)
     tags                  = optional(map(string), {})
   })
+  nullable = false
 }
 
 ################################################################################
@@ -69,6 +71,7 @@ variable "task_definition" {
 variable "create_capacity_provider" {
   description = "Creates a new Capacity Provider to use with the Autoscaling Group."
   type        = bool
+  nullable    = false
   default     = true
 }
 
@@ -81,12 +84,14 @@ variable "capacity_provider_default_auto_scaling_group_arn" {
 variable "capacity_providers" {
   description = "Capacity Providers to associate with the ECS Cluster."
   type        = any
+  nullable    = false
   default     = {}
 }
 
 variable "default_capacity_providers_strategies" {
   description = "(Optional) Set of capacity provider strategies to use by default for the cluster."
   type        = any
+  nullable    = false
   default     = []
 }
 
@@ -97,6 +102,7 @@ variable "default_capacity_providers_strategies" {
 variable "create_alb" {
   description = "Creates a new Application Load Balancer to use with the ECS Service."
   type        = bool
+  nullable    = false
   default     = true
 }
 
@@ -116,7 +122,8 @@ variable "load_balancer" {
     listener_rules             = optional(any, {})
     tags                       = optional(map(string), {})
   })
-  default = {}
+  nullable = false
+  default  = {}
 }
 
 ################################################################################
@@ -150,6 +157,12 @@ variable "s3_bucket_policy_id_prefix" {
   default     = "ecs-deployment-alb-"
 }
 
+variable "s3_elb_service_account_arn" {
+  description = "(Optional, Default:null) ARN of the ELB Service Account."
+  type        = string
+  default     = null
+}
+
 variable "s3_bucket_access_logs_prefix" {
   description = "(Optional) - Prefix for storing ALB access logs in the S3 bucket."
   type        = string
@@ -178,6 +191,7 @@ variable "s3_bucket_tags" {
 variable "create_acm" {
   description = "Creates the ACM certificates to use with the Load Balancer."
   type        = bool
+  nullable    = false
   default     = false
 }
 
@@ -196,5 +210,6 @@ variable "acm_certificates" {
     record_zone_id         = string
     record_allow_overwrite = optional(bool, true)
   }))
-  default = {}
+  nullable = false
+  default  = {}
 }
