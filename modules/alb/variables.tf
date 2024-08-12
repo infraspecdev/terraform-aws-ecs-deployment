@@ -11,29 +11,34 @@ variable "name" {
 variable "internal" {
   description = "(Optional) If true, the LB will be internal."
   type        = bool
+  nullable    = false
   default     = false
 }
 
 variable "security_groups_ids" {
   description = "(Optional) List of security group IDs to assign to the LB."
   type        = list(string)
+  nullable    = false
   default     = []
 }
 
 variable "subnets_ids" {
   description = "(Optional) List of subnet IDs to attach to the LB."
   type        = list(string)
+  nullable    = false
 }
 
 variable "preserve_host_header" {
   description = "(Optional) Whether the Application Load Balancer should preserve the Host header in the HTTP request and send it to the target without any change."
   type        = bool
+  nullable    = false
   default     = true
 }
 
 variable "enable_deletion_protection" {
   description = "(Optional) If true, deletion of the load balancer will be disabled via the AWS API."
   type        = bool
+  nullable    = false
   default     = false
 }
 
@@ -60,6 +65,7 @@ variable "connection_logs" {
 variable "tags" {
   description = "(Optional) Map of tags to assign to the resource."
   type        = map(string)
+  nullable    = false
   default     = {}
 }
 
@@ -78,7 +84,8 @@ variable "target_groups" {
     health_check = optional(any, null)
     tags         = optional(map(string), {})
   }))
-  default = {}
+  nullable = false
+  default  = {}
 }
 
 ################################################################################
@@ -102,6 +109,8 @@ variable "listeners" {
     ssl_policy      = optional(string, "ELBSecurityPolicy-TLS13-1-2-2021-06")
     tags            = optional(map(string), {})
   }))
+  nullable = false
+  default  = {}
 }
 
 ################################################################################
@@ -141,5 +150,6 @@ variable "listener_rules" {
     }))
     tags = optional(map(string), {})
   }))
-  default = {}
+  nullable = false
+  default  = {}
 }
