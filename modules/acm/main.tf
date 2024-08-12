@@ -13,9 +13,9 @@ locals {
 
 resource "aws_acm_certificate" "this" {
   domain_name               = var.certificate_domain_name
-  subject_alternative_names = try(var.certificate_subject_alternative_names, null)
-  validation_method         = try(var.certificate_validation_method, null)
-  key_algorithm             = try(var.certificate_key_algorithm, null)
+  subject_alternative_names = var.certificate_subject_alternative_names
+  validation_method         = var.certificate_validation_method
+  key_algorithm             = var.certificate_key_algorithm
 
   dynamic "validation_option" {
     for_each = try(var.certificate_validation_option, null) != null ? [1] : []
