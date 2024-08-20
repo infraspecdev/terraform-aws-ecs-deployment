@@ -1,5 +1,9 @@
 locals {
+  # Load Balancer
   load_balancer_type = "application"
+
+  # Load Balancer Listener
+  default_ssl_policy = "ELBSecurityPolicy-TLS13-1-2-2021-06"
 }
 
 ################################################################################
@@ -84,7 +88,7 @@ resource "aws_lb_listener" "this" {
   certificate_arn = try(each.value.certificate_arn, null)
   port            = try(each.value.port, null)
   protocol        = try(each.value.protocol, null)
-  ssl_policy      = try(each.value.ssl_policy, null)
+  ssl_policy      = try(each.value.ssl_policy, each.value.certificate_arn != null ? local.default_ssl_policy : null)
 
   dynamic "default_action" {
     for_each = each.value.default_action

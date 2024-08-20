@@ -106,7 +106,7 @@ variable "listeners" {
     certificate_arn = optional(string)
     port            = optional(number)
     protocol        = optional(string, "HTTP")
-    ssl_policy      = optional(string, "ELBSecurityPolicy-TLS13-1-2-2021-06")
+    ssl_policy      = optional(string, null)
     tags            = optional(map(string), {})
   }))
   nullable = false
