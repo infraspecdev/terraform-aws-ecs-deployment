@@ -6,15 +6,17 @@ locals {
   ecs_task_definition_requires_compatibilities = ["EC2"]
 
   # ALB
+  s3_bucket_access_logs_prefix = "alb-access-logs"
   alb_access_logs_default_s3_configuration = var.create_s3_bucket_for_alb_logging ? {
     bucket  = module.s3_bucket[0].bucket_id
     enabled = true
-    prefix  = var.s3_bucket_access_logs_prefix
+    prefix  = local.s3_bucket_access_logs_prefix
   } : null
+  s3_bucket_connection_logs_prefix = "alb-connection-logs"
   alb_connection_logs_default_s3_configuration = var.create_s3_bucket_for_alb_logging ? {
     bucket  = module.s3_bucket[0].bucket_id
     enabled = true
-    prefix  = var.s3_bucket_connection_logs_prefix
+    prefix  = local.s3_bucket_connection_logs_prefix
   } : null
 
   alb_target_groups = {

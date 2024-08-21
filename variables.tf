@@ -163,20 +163,6 @@ variable "s3_elb_service_account_arn" {
   default     = null
 }
 
-variable "s3_bucket_access_logs_prefix" {
-  description = "(Optional) - Prefix for storing ALB access logs in the S3 bucket."
-  type        = string
-  nullable    = false
-  default     = "alb-access-logs"
-}
-
-variable "s3_bucket_connection_logs_prefix" {
-  description = "(Optional) - Prefix for storing ALB connection logs in the S3 bucket."
-  type        = string
-  nullable    = false
-  default     = "alb-connection-logs"
-}
-
 variable "s3_bucket_tags" {
   description = "(Optional) Map of tags to assign to the bucket."
   type        = map(string)
