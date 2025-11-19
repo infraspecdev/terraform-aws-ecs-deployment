@@ -132,3 +132,13 @@ variable "domain_name" {
   description = "Domain name for ACM"
   type        = string
 }
+
+variable "region" {
+  description = "AWS region to deploy resources"
+  type        = string
+}
+
+variable "route53_assume_role_arn" {
+  description = "ARN of the cross-account role for Route53 DNS record creation"
+  type        = string
+}

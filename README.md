@@ -12,13 +12,13 @@ Terraform module to deploy production-ready applications and services on an exis
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.6.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 6.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 5.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 6.0 |
 
 ## Modules
 
@@ -51,6 +51,8 @@ Terraform module to deploy production-ready applications and services on an exis
 | <a name="input_create_s3_bucket_for_alb_logging"></a> [create\_s3\_bucket\_for\_alb\_logging](#input\_create\_s3\_bucket\_for\_alb\_logging) | (Optional) Creates S3 bucket for storing ALB Access and Connection Logs. | `bool` | `true` | no |
 | <a name="input_default_capacity_providers_strategies"></a> [default\_capacity\_providers\_strategies](#input\_default\_capacity\_providers\_strategies) | (Optional) Set of capacity provider strategies to use by default for the cluster. | `any` | `[]` | no |
 | <a name="input_load_balancer"></a> [load\_balancer](#input\_load\_balancer) | Configuration for the Application Load Balancer. | <pre>object({<br/>    name                       = optional(string)<br/>    internal                   = optional(bool, false)<br/>    subnets_ids                = optional(list(string), [])<br/>    security_groups_ids        = optional(list(string), [])<br/>    preserve_host_header       = optional(bool)<br/>    enable_deletion_protection = optional(bool, false)<br/>    access_logs                = optional(any, null)<br/>    connection_logs            = optional(any, null)<br/>    target_groups              = optional(any, {})<br/>    listeners                  = optional(any, {})<br/>    listener_rules             = optional(any, {})<br/>    tags                       = optional(map(string), {})<br/>  })</pre> | `{}` | no |
+| <a name="input_region"></a> [region](#input\_region) | (Optional) AWS region to create resources in. | `string` | `null` | no |
+| <a name="input_route53_assume_role_arn"></a> [route53\_assume\_role\_arn](#input\_route53\_assume\_role\_arn) | (Optional) ARN of the role to assume for Route53 operations. | `string` | `null` | no |
 | <a name="input_s3_bucket_force_destroy"></a> [s3\_bucket\_force\_destroy](#input\_s3\_bucket\_force\_destroy) | (Optional, Default:false) Boolean that indicates all objects (including any locked objects) should be deleted from the bucket when the bucket is destroyed so that the bucket can be destroyed without error. | `bool` | `false` | no |
 | <a name="input_s3_bucket_name"></a> [s3\_bucket\_name](#input\_s3\_bucket\_name) | (Optional, Forces new resource) Name of the bucket. | `string` | `null` | no |
 | <a name="input_s3_bucket_policy_id_prefix"></a> [s3\_bucket\_policy\_id\_prefix](#input\_s3\_bucket\_policy\_id\_prefix) | (Optional) - Prefix of the ID for the policy document. | `string` | `"ecs-deployment-alb-"` | no |
