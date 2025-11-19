@@ -61,12 +61,6 @@ variable "record_allow_overwrite" {
   default     = true
 }
 
-variable "region" {
-  type        = string
-  default     = null
-  description = "(Optional) Region to create ACM certificate in"
-}
-
 variable "route53_assume_role_arn" {
   type        = string
   default     = null

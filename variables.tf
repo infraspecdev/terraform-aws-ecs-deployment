@@ -211,4 +211,3 @@ variable "route53_assume_role_arn" {
   type        = string
   default     = null
 }
-  

@@ -264,14 +264,12 @@ module "acm" {
   source = "./modules/acm"
 
   providers = {
-    aws      = aws
-    aws.dns  = aws.dns
+    aws     = aws
+    aws.dns = aws.dns
   }
   route53_assume_role_arn = var.route53_assume_role_arn
-  region                 = var.region
 
   for_each = var.create_acm ? var.acm_certificates : {}
-
   # ACM Certificate
   certificate_domain_name               = each.value.domain_name
   certificate_subject_alternative_names = try(each.value.subject_alternative_names, null)
@@ -282,8 +280,7 @@ module "acm" {
   # Route53 Record
   record_zone_id         = try(each.value.record_zone_id, null)
   record_allow_overwrite = try(each.value.record_allow_overwrite, null)
-
-  tags = try(each.value.tags, {})
+  tags                   = try(each.value.tags, {})
 }
 
 ################################################################################
