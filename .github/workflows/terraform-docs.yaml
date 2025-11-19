@@ -13,7 +13,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Render and Push terraform docs for main module
         uses: terraform-docs/gh-actions@main
