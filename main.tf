@@ -243,9 +243,32 @@ resource "aws_ecs_task_definition" "this" {
 ################################################################################
 # Amazon Certificates Manager Sub-module
 ################################################################################
+provider "aws" {
+  region = var.region
+}
+
+# Cross-account provider for Route53
+provider "aws" {
+  alias  = "dns"
+  region = var.region
+
+  dynamic "assume_role" {
+    for_each = var.route53_assume_role_arn != null ? [1] : []
+    content {
+      role_arn = var.route53_assume_role_arn
+    }
+  }
+}
 
 module "acm" {
   source = "./modules/acm"
+
+  providers = {
+    aws      = aws
+    aws.dns  = aws.dns
+  }
+  route53_assume_role_arn = var.route53_assume_role_arn
+  region                 = var.region
 
   for_each = var.create_acm ? var.acm_certificates : {}
 
