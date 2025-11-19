@@ -7,6 +7,19 @@ locals {
   }
 }
 
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 6.0"
+      configuration_aliases = [
+        aws,
+        aws.dns
+      ]
+    }
+  }
+}
+
 ################################################################################
 # ACM Certificate
 ################################################################################
@@ -37,7 +50,22 @@ resource "aws_acm_certificate" "this" {
 # ACM Validation
 ################################################################################
 
-resource "aws_route53_record" "this" {
+resource "aws_route53_record" "same_account" {
+  count = var.route53_assume_role_arn == null ? 1 : 0
+
+  zone_id         = var.record_zone_id
+  name            = local.acm_certificate_validation_record.name
+  type            = local.acm_certificate_validation_record.type
+  records         = [local.acm_certificate_validation_record.value]
+  ttl             = 60
+  allow_overwrite = var.record_allow_overwrite
+}
+
+resource "aws_route53_record" "cross_account" {
+  count    = var.route53_assume_role_arn != null ? 1 : 0
+  provider = aws.dns
+
+
   zone_id         = var.record_zone_id
   name            = local.acm_certificate_validation_record.name
   type            = local.acm_certificate_validation_record.type
@@ -47,6 +75,11 @@ resource "aws_route53_record" "this" {
 }
 
 resource "aws_acm_certificate_validation" "this" {
-  certificate_arn         = aws_acm_certificate.this.arn
-  validation_record_fqdns = [aws_route53_record.this.fqdn]
+  certificate_arn = aws_acm_certificate.this.arn
+
+  validation_record_fqdns = [
+    var.route53_assume_role_arn == null ?
+    aws_route53_record.same_account[0].fqdn :
+    aws_route53_record.cross_account[0].fqdn
+  ]
 }
