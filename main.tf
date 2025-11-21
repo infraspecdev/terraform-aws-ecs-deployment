@@ -249,7 +249,7 @@ provider "aws" {
 
 # Cross-account provider for Route53
 provider "aws" {
-  alias  = "dns"
+  alias  = "cross_account_provider"
   region = var.region
 
   dynamic "assume_role" {
@@ -264,8 +264,8 @@ module "acm" {
   source = "./modules/acm"
 
   providers = {
-    aws     = aws
-    aws.dns = aws.dns
+    aws                        = aws
+    aws.cross_account_provider = aws.cross_account_provider
   }
   route53_assume_role_arn = var.route53_assume_role_arn
 

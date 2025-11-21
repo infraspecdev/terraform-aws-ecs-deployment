@@ -14,7 +14,7 @@ terraform {
       version = "~> 6.0"
       configuration_aliases = [
         aws,
-        aws.dns
+        aws.cross_account_provider
       ]
     }
   }
@@ -50,7 +50,7 @@ resource "aws_acm_certificate" "this" {
 # ACM Validation
 ################################################################################
 
-resource "aws_route53_record" "same_account" {
+resource "aws_route53_record" "this" {
   count = var.route53_assume_role_arn == null ? 1 : 0
 
   zone_id         = var.record_zone_id
@@ -63,7 +63,7 @@ resource "aws_route53_record" "same_account" {
 
 resource "aws_route53_record" "cross_account" {
   count    = var.route53_assume_role_arn != null ? 1 : 0
-  provider = aws.dns
+  provider = aws.cross_account_provider
 
 
   zone_id         = var.record_zone_id
@@ -79,7 +79,7 @@ resource "aws_acm_certificate_validation" "this" {
 
   validation_record_fqdns = [
     var.route53_assume_role_arn == null ?
-    aws_route53_record.same_account[0].fqdn :
+    aws_route53_record.this[0].fqdn :
     aws_route53_record.cross_account[0].fqdn
   ]
 }
