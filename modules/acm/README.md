@@ -31,7 +31,7 @@ This sub-module creates the Amazon-issued certificate for a given domain with `v
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 6.0 |
-| <a name="provider_aws.dns"></a> [aws.dns](#provider\_aws.dns) | ~> 6.0 |
+| <a name="provider_aws.cross_account_provider"></a> [aws.cross\_account\_provider](#provider\_aws.cross\_account\_provider) | ~> 6.0 |
 
 ## Modules
 
@@ -44,7 +44,7 @@ No modules.
 | [aws_acm_certificate.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/acm_certificate) | resource |
 | [aws_acm_certificate_validation.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/acm_certificate_validation) | resource |
 | [aws_route53_record.cross_account](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
-| [aws_route53_record.same_account](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
+| [aws_route53_record.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 
 ## Inputs
 
