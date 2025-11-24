@@ -38,6 +38,21 @@ resource "aws_acm_certificate" "this" {
 ################################################################################
 
 resource "aws_route53_record" "this" {
+  count = var.route53_assume_role_arn == null ? 1 : 0
+
+  zone_id         = var.record_zone_id
+  name            = local.acm_certificate_validation_record.name
+  type            = local.acm_certificate_validation_record.type
+  records         = [local.acm_certificate_validation_record.value]
+  ttl             = 60
+  allow_overwrite = var.record_allow_overwrite
+}
+
+resource "aws_route53_record" "cross_account" {
+  count    = var.route53_assume_role_arn != null ? 1 : 0
+  provider = aws.cross_account_provider
+
+
   zone_id         = var.record_zone_id
   name            = local.acm_certificate_validation_record.name
   type            = local.acm_certificate_validation_record.type
@@ -47,6 +62,11 @@ resource "aws_route53_record" "this" {
 }
 
 resource "aws_acm_certificate_validation" "this" {
-  certificate_arn         = aws_acm_certificate.this.arn
-  validation_record_fqdns = [aws_route53_record.this.fqdn]
+  certificate_arn = aws_acm_certificate.this.arn
+
+  validation_record_fqdns = [
+    var.route53_assume_role_arn == null ?
+    aws_route53_record.this[0].fqdn :
+    aws_route53_record.cross_account[0].fqdn
+  ]
 }

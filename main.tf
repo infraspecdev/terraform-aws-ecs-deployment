@@ -243,12 +243,33 @@ resource "aws_ecs_task_definition" "this" {
 ################################################################################
 # Amazon Certificates Manager Sub-module
 ################################################################################
+provider "aws" {
+  region = var.region
+}
+
+# Cross-account provider for Route53
+provider "aws" {
+  alias  = "cross_account_provider"
+  region = var.region
+
+  dynamic "assume_role" {
+    for_each = var.route53_assume_role_arn != null ? [1] : []
+    content {
+      role_arn = var.route53_assume_role_arn
+    }
+  }
+}
 
 module "acm" {
   source = "./modules/acm"
 
-  for_each = var.create_acm ? var.acm_certificates : {}
+  providers = {
+    aws                        = aws
+    aws.cross_account_provider = aws.cross_account_provider
+  }
+  route53_assume_role_arn = var.route53_assume_role_arn
 
+  for_each = var.create_acm ? var.acm_certificates : {}
   # ACM Certificate
   certificate_domain_name               = each.value.domain_name
   certificate_subject_alternative_names = try(each.value.subject_alternative_names, null)
@@ -259,8 +280,7 @@ module "acm" {
   # Route53 Record
   record_zone_id         = try(each.value.record_zone_id, null)
   record_allow_overwrite = try(each.value.record_allow_overwrite, null)
-
-  tags = try(each.value.tags, {})
+  tags                   = try(each.value.tags, {})
 }
 
 ################################################################################
