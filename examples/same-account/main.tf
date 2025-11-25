@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "ap-south-1"
+  region = var.region
 }
 
 locals {
@@ -24,6 +24,11 @@ locals {
 
 module "ecs_deployment" {
   source = "../../"
+
+  providers = {
+    aws                        = aws
+    aws.cross_account_provider = aws
+  }
 
   cluster_name = var.cluster_name
   vpc_id       = var.vpc_id
@@ -93,9 +98,6 @@ module "ecs_deployment" {
       record_zone_id    = data.aws_route53_zone.base_domain.zone_id
     }
   }
-  region = var.region
-  # Cross-account role that ACM module will use for Route53 DNS record creation
-  route53_assume_role_arn = var.route53_assume_role_arn
 
   # Application Load Balancer
   load_balancer = {

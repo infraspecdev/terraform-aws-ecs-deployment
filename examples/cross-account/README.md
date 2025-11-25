@@ -1,11 +1,33 @@
 <!-- BEGIN_TF_DOCS -->
 # ECS Deployment Complete
 
+
+
 Configuration in this directory creates:
 
 - ECS Service in a pre-configured ECS Cluster and corresponding ECS Capacity Providers
 - Internet-facing Application Load Balancer to access the deployed services with S3 bucket for storing access and connection logs, and
 - ACM to generate and validate an Amazon-issued certificate for a base domain
+
+
+For cross-account Route53 validation, configure the alias provider with assume_role and pass it to the module as:
+providers = { aws = aws, aws.cross_account_provider = aws.cross_account_provider }.
+Ensure the cross_account_provider includes the assume_role block pointing to the Route53 account role.
+provider "aws" { alias = "cross_account_provider" ... assume_role { role_arn = "<role>" } }
+
+## Prerequisites
+
+**Create an IAM Role in the Hosted Zone Account (Account B)**
+If you want to validate ACM certificates across accounts, ensure that an IAM role exists in Account B (Route53 Hosted Zone account) that grants cross-account access to manage Route53 DNS records.
+This role must allow Account A (where ACM and your application resources are created) to assume it.
+It should include permissions such as:
+
+route53:ChangeResourceRecordSets
+route53:ListHostedZonesByName
+route53:ListResourceRecordSets
+
+And a trust policy allowing Account A to assume the role.
+
 
 ## Example `tfvars` Configuration
 
@@ -56,6 +78,8 @@ s3_bucket_force_destroy = true
 
 base_domain = "example.com"
 domain_name = "your-service.example.com"
+region = "us-east-1"
+route53_assume_role_arn = "arn:aws:iam::123456789012:role/Route53CrossAccountRole"
 ```
 
 ## Usage

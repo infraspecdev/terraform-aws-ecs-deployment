@@ -25,6 +25,27 @@ jobs:
         id: fmt
         run: terraform test
 
+  validateExamples:
+    name: Terraform Validate Examples
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.6.0"
+
+      - name: Validate all example folders
+        run: |
+          for dir in examples/*/; do
+            echo "Validating $dir"
+            terraform -chdir="$dir" init -input=false > /dev/null
+            terraform -chdir="$dir" validate
+          done
+
   collectInputs:
     name: Collect workflow inputs
     needs: test

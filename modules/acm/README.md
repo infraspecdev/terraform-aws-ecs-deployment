@@ -24,14 +24,13 @@ This sub-module creates the Amazon-issued certificate for a given domain with `v
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.6.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 6.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 6.0 |
-| <a name="provider_aws.cross_account_provider"></a> [aws.cross\_account\_provider](#provider\_aws.cross\_account\_provider) | ~> 6.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_aws.cross_account_provider"></a> [aws.cross\_account\_provider](#provider\_aws.cross\_account\_provider) | n/a |
 
 ## Modules
 
