@@ -17,14 +17,9 @@ output "acm_certificate_arn" {
 ################################################################################
 
 output "route53_record_id" {
-  description = "Identifier of the Route53 Record (supports same & cross-account)."
-  value = (
-    var.route53_assume_role_arn == null
-    ? aws_route53_record.this[0].id
-    : aws_route53_record.cross_account[0].id
-  )
+  description = "Identifier of the Route53 Record for validation of the ACM certificate."
+  value       = aws_route53_record.this.id
 }
-
 
 ################################################################################
 # ACM Certificate Validation
