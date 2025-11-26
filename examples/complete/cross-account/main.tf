@@ -1,15 +1,13 @@
 provider "aws" {
-  region = "ap-south-1"
+  region = var.region
 }
+
 provider "aws" {
   alias  = "cross_account_provider"
   region = var.region
 
-  dynamic "assume_role" {
-    for_each = var.route53_assume_role_arn != null ? [1] : []
-    content {
-      role_arn = var.route53_assume_role_arn
-    }
+  assume_role {
+    role_arn = var.route53_assume_role_arn
   }
 }
 
@@ -34,7 +32,7 @@ locals {
 ################################################################################
 
 module "ecs_deployment" {
-  source = "../../"
+  source = "../../../"
 
   providers = {
     aws                        = aws
