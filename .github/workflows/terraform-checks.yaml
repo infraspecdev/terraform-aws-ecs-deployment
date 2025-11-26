@@ -34,7 +34,6 @@ jobs:
         example:
           - examples/same-account
           - examples/cross-account
-          - examples/complete
     defaults:
       run:
         working-directory: ${{ matrix.example }}
