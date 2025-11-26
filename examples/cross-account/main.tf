@@ -12,7 +12,7 @@ provider "aws" {
 }
 
 locals {
-  task_definition_network_mode = "awsvpc"
+  task_definition_network_mode                = "awsvpc"
   capacity_provider_default_strategies_weight = 1
   capacity_provider_default_strategies_base   = 0
 
