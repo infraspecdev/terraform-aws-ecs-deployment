@@ -26,33 +26,33 @@ jobs:
         run: terraform test
   
   validateExamples:
-  name: Terraform Validate Example Files
-  runs-on: ubuntu-latest
-  strategy:
-    fail-fast: false
-    matrix:
-      example:
-        - examples/same-account
-        - examples/cross-account
-        - examples/complete
-  defaults:
-    run:
-      working-directory: ${{ matrix.example }}
+    name: Terraform Validate Example Files
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        example:
+          - examples/same-account
+          - examples/cross-account
+          - examples/complete
+    defaults:
+      run:
+        working-directory: ${{ matrix.example }}
 
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: "1.6.0"
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.6.0"
 
-    - name: Terraform Init
-      run: terraform init -input=false
+      - name: Terraform Init
+        run: terraform init -input=false
 
-    - name: Terraform Validate
-      run: terraform validate
+      - name: Terraform Validate
+        run: terraform validate
 
 
   collectInputs:
