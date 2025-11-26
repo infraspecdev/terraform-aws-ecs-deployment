@@ -26,17 +26,8 @@ jobs:
         run: terraform test
 
   validateExamples:
-    name: Terraform Validate Example Files
+    name: Terraform Validate Examples
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        example:
-          - examples/same-account
-          - examples/cross-account
-    defaults:
-      run:
-        working-directory: ${{ matrix.example }}
 
     steps:
       - name: Checkout
@@ -47,11 +38,13 @@ jobs:
         with:
           terraform_version: "1.6.0"
 
-      - name: Terraform Init
-        run: terraform init -input=false
-
-      - name: Terraform Validate
-        run: terraform validate
+      - name: Validate all example folders
+        run: |
+          for dir in examples/*/; do
+            echo "Validating $dir"
+            terraform -chdir="$dir" init -input=false > /dev/null
+            terraform -chdir="$dir" validate
+          done
 
   collectInputs:
     name: Collect workflow inputs
