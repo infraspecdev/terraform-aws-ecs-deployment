@@ -24,7 +24,7 @@ jobs:
       - name: Terraform Test
         id: fmt
         run: terraform test
-  
+
   validateExamples:
     name: Terraform Validate Example Files
     runs-on: ubuntu-latest
@@ -52,7 +52,6 @@ jobs:
 
       - name: Terraform Validate
         run: terraform validate
-
 
   collectInputs:
     name: Collect workflow inputs
