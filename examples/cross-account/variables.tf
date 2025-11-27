@@ -136,9 +136,11 @@ variable "domain_name" {
 variable "region" {
   description = "AWS region to deploy resources"
   type        = string
+  default     = null
 }
 
 variable "route53_assume_role_arn" {
   description = "ARN of the cross-account role for Route53 DNS record creation"
   type        = string
+  default     = null
 }

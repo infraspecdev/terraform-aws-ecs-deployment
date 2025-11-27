@@ -200,12 +200,6 @@ variable "acm_certificates" {
   default  = {}
 }
 
-variable "region" {
-  description = "(Optional) AWS region to create resources in."
-  type        = string
-  default     = null
-}
-
 variable "route53_assume_role_arn" {
   description = "(Optional) ARN of the role to assume for Route53 operations."
   type        = string
