@@ -38,6 +38,10 @@ jobs:
             conventional-changelog-conventionalcommits@4.6.3
           dry_run: true
           ci: false
+          branches: |
+            [
+              `${{ github.event.pull_request.head.ref }}`
+            ]
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
