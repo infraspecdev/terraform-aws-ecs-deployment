@@ -20,7 +20,7 @@ jobs:
         run: |
           git config --global user.name github-actions
           git config --global user.email github-actions@github.com
-          git merge --no-ff origin/${{ github.event.pull_request.head.ref }} --message "${{ github.event.pull_request.title }}"
+          git merge --no-ff origin/${{ github.event.pull_request.head.ref }} --message "Test"
 
       - name: Semantic Release
         id: semantic-release
