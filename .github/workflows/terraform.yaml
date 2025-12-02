@@ -6,6 +6,9 @@ on:
       - main
       - master
   pull_request_target:
+    branches:
+      - main
+      - master
     types:
       - opened
       - edited
@@ -15,6 +18,19 @@ on:
       - main
       - master
 jobs:
+  prTitlecheck:
+    name: PR title check
+    if: ${{ github.event_name == 'pull_request_target' }}
+    uses: ./.github/workflows/pr-title.yaml
+
+  versionPreview:
+    name: Version Preview
+    if: ${{ github.event_name == 'pull_request' }}
+    permissions:
+      contents: read
+      pull-requests: write
+    uses: ./.github/workflows/version-preview.yaml
+
   preCommitCheck:
     name: Terraform Checks
     uses: ./.github/workflows/terraform-checks.yaml

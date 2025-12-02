@@ -1,0 +1,77 @@
+name: 'Version Preview'
+
+on:
+  workflow_call:
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  preview:
+    name: Preview Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Analyze PR commits
+        id: semantic
+        run: |
+          git fetch origin ${{ github.base_ref }}
+
+          COMMITS=$(git log origin/${{ github.base_ref }}..HEAD --pretty=format:"%s")
+
+          if echo "$COMMITS" | grep -qE "^[a-z]+(\(.+\))?!:|BREAKING CHANGE:"; then
+            TYPE="major"
+          elif echo "$COMMITS" | grep -qE "^feat(\(.+\))?:"; then
+            TYPE="minor"
+          elif echo "$COMMITS" | grep -qE "^fix(\(.+\))?:"; then
+            TYPE="patch"
+          else
+            TYPE="none"
+          fi
+
+          if [ "$TYPE" != "none" ]; then
+            CURRENT=$(git tag --sort=-v:refname | head -1 | sed 's/^v//')
+            IFS='.' read -r maj min pat <<< "$CURRENT"
+
+            [ "$TYPE" = "major" ] && maj=$((maj + 1)) && min=0 && pat=0
+            [ "$TYPE" = "minor" ] && min=$((min + 1)) && pat=0
+            [ "$TYPE" = "patch" ] && pat=$((pat + 1))
+
+            echo "new_release_published=true" >> $GITHUB_OUTPUT
+            echo "new_release_version=$maj.$min.$pat" >> $GITHUB_OUTPUT
+            echo "new_release_type=$TYPE" >> $GITHUB_OUTPUT
+            echo "new_release_notes<<EOF" >> $GITHUB_OUTPUT
+            echo "## Changes in this PR" >> $GITHUB_OUTPUT
+            echo "$COMMITS" | sed 's/^/- /' >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "new_release_published=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Comment PR
+        if: always()
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: release-preview
+          message: |
+            ## Release Preview
+
+            ${{ steps.semantic.outputs.new_release_published == 'true' && format('**Release Type:** `{0}`
+            **Next Version:** `v{1}`
+
+            ### Release Notes
+            {2}
+
+            ---
+            *This shows what release will be created when this PR is merged.*', steps.semantic.outputs.new_release_type, steps.semantic.outputs.new_release_version, steps.semantic.outputs.new_release_notes) || 'No new release will be created from this PR.
+
+            This PR does not contain conventional commits that trigger a release.' }}
