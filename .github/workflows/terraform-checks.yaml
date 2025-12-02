@@ -41,6 +41,7 @@ jobs:
               'debug-release',
             ]
           dry_run: true
+          ci: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
