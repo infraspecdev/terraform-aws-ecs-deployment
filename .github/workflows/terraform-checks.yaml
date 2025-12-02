@@ -14,20 +14,28 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
+        
+      - name: Temporarily merge PR branch
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          git config --global user.name github-actions
+          git config --global user.email github-actions@github.com
+          git merge --no-ff origin/${{ github.event.pull_request.head.ref }} --message "${{ github.event.pull_request.title }}"
 
-      - name: Release
-        uses: cycjimmy/semantic-release-action@v2
+      - name: Semantic Release
+        id: semantic-release
+        uses: cycjimmy/semantic-release-action@v6
         with:
-          semantic_version: 18.0.0
-          extra_plugins: |
-            @semantic-release/changelog@6.0.0
-            @semantic-release/git@10.0.0
-            conventional-changelog-conventionalcommits@4.6.3
-          dry_run: true
+          unset_gha_env: ${{ github.event_name == 'pull_request' }}
+          ci: ${{ github.event_name == 'pull_request' && false || '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Show version preview output
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          echo "Version Preview: ${{ steps.semantic-release.outputs.new_release_version || 'No new version' }}"
+          echo "Previous Version: ${{ steps.semantic-release.outputs.last_release_version || 'No previous version' }}"
 
   test:
     name: Test
