@@ -22,11 +22,7 @@ jobs:
           fetch-depth: 0
 
       - name: Create temporary branch
-        run: |
-          echo "Current state: detached HEAD"
-          echo "Creating temporary branch for semantic-release..."
-          git checkout -b temp-preview-branch
-          echo "Now on branch: $(git branch --show-current)"
+        run: git checkout -b temp-preview-branch
 
       - name: Semantic Release (Dry Run)
         id: semantic
