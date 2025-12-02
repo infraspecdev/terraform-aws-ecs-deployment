@@ -26,7 +26,7 @@ route53:ChangeResourceRecordSets
 route53:ListHostedZonesByName
 route53:ListResourceRecordSets
 
-And a trust policy allowing Account A to assume the role.
+And a trust policy which allows Account A to assume the role.
 
 
 ## Example `tfvars` Configuration
