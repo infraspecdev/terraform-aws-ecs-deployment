@@ -21,6 +21,20 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Debug Git State
+        run: |
+          echo "Current branch: $(git branch --show-current)"
+          echo "Current HEAD: $(git rev-parse HEAD)"
+          echo ""
+          echo "Latest 5 commits:"
+          git log --oneline -5
+          echo ""
+          echo "Latest tag:"
+          git describe --tags --abbrev=0 || echo "No tags found"
+          echo ""
+          echo "Commits since last tag:"
+          git log $(git describe --tags --abbrev=0 2>/dev/null || echo "HEAD~10")..HEAD --oneline || echo "Cannot determine"
+
       - name: Semantic Release (Dry Run)
         id: semantic
         uses: cycjimmy/semantic-release-action@v4
