@@ -21,19 +21,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Debug Git State
+      - name: Create temporary branch
         run: |
-          echo "Current branch: $(git branch --show-current)"
-          echo "Current HEAD: $(git rev-parse HEAD)"
-          echo ""
-          echo "Latest 5 commits:"
-          git log --oneline -5
-          echo ""
-          echo "Latest tag:"
-          git describe --tags --abbrev=0 || echo "No tags found"
-          echo ""
-          echo "Commits since last tag:"
-          git log $(git describe --tags --abbrev=0 2>/dev/null || echo "HEAD~10")..HEAD --oneline || echo "Cannot determine"
+          echo "Current state: detached HEAD"
+          echo "Creating temporary branch for semantic-release..."
+          git checkout -b temp-preview-branch
+          echo "Now on branch: $(git branch --show-current)"
 
       - name: Semantic Release (Dry Run)
         id: semantic
@@ -43,13 +36,7 @@ jobs:
           dry_run: true
           branches: |
             [
-              '+([0-9])?(.{+([0-9]),x}).x',
-              'main',
-              'master',
-              {
-                name: '*',
-                prerelease: true
-              }
+              'temp-preview-branch'
             ]
           extra_plugins: |
             @semantic-release/changelog@6.0.0
