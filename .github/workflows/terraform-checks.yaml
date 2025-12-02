@@ -38,7 +38,7 @@ jobs:
             conventional-changelog-conventionalcommits@4.6.3
           branches: |
             [
-              'debug-release',
+              `*`
             ]
           dry_run: true
           ci: false
