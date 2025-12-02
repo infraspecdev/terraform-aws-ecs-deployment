@@ -17,8 +17,9 @@ jobs:
         
       - name: Temporarily merge PR branch
         if: ${{ github.event_name == 'pull_request' }}
-        run: |
-          git merge --no-ff origin/${{ github.event.pull_request.head.ref }} --message "Test"
+        run:
+          git remote -v
+          git merge --no-ff ${{ github.event.pull_request.head.ref }} --message "Test"
 
       - name: Semantic Release
         id: semantic-release
