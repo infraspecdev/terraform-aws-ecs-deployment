@@ -21,6 +21,8 @@ jobs:
       - name: Temporarily merge PR branch
         if: ${{ github.event_name == 'pull_request' }}
         run: |
+          git config --global user.name github-actions
+          git config --global user.email github-actions@github.com
           git checkout main
           git checkout -b temp-merge-branch
           git merge --no-ff origin/${{ github.event.pull_request.head.ref }} --message "Test"
