@@ -36,10 +36,6 @@ jobs:
             @semantic-release/changelog@6.0.0
             @semantic-release/git@10.0.0
             conventional-changelog-conventionalcommits@4.6.3
-          branches: |
-            [
-              'refs/pull/29/merge'
-            ]
           dry_run: true
           ci: false
         env:
