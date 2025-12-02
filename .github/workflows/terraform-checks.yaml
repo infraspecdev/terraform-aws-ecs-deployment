@@ -27,14 +27,19 @@ jobs:
           git checkout -b temp-merge-branch
           git merge --no-ff origin/${{ github.event.pull_request.head.ref }} --message "Test"
 
-      - name: Semantic Release
+      - name: Release
         id: semantic-release
-        uses: cycjimmy/semantic-release-action@v6
+        uses: cycjimmy/semantic-release-action@v2
         with:
-          unset_gha_env: ${{ github.event_name == 'pull_request' }}
-          ci: ${{ github.event_name == 'pull_request' && false || '' }}
+          semantic_version: 18.0.0
+          extra_plugins: |
+            @semantic-release/changelog@6.0.0
+            @semantic-release/git@10.0.0
+            conventional-changelog-conventionalcommits@4.6.3
+          dry_run: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
       - name: Show version preview output
         if: ${{ github.event_name == 'pull_request' }}
