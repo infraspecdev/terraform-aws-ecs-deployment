@@ -36,21 +36,38 @@ jobs:
 
       - name: Install semantic-release
         run: |
-          npm install -g semantic-release@18.0.0 \
+          npm install --save-dev semantic-release@18.0.0 \
             @semantic-release/commit-analyzer@9.0.2 \
             @semantic-release/release-notes-generator@10.0.3 \
-            @semantic-release/github@8.0.7 \
             conventional-changelog-conventionalcommits@4.6.3
+
+      - name: Create preview config
+        run: |
+          # Create a config without GitHub plugin for preview (avoids token validation)
+          cat > .releaserc.preview.json << 'EOF'
+          {
+            "branches": ["main"],
+            "plugins": [
+              "@semantic-release/commit-analyzer",
+              "@semantic-release/release-notes-generator"
+            ]
+          }
+          EOF
 
       - name: Run semantic-release (dry-run)
         id: semantic
         run: |
-          # Run semantic-release in dry-run mode and capture output
-          # Override branch config to treat current branch as 'main'
-          OUTPUT=$(npx semantic-release --dry-run --no-ci --branches main 2>&1 || true)
+          # Temporarily rename main config to use preview config only
+          mv .releaserc.json .releaserc.json.bak
+
+          # Run semantic-release in dry-run mode with preview config only
+          OUTPUT=$(npx semantic-release --extends ./.releaserc.preview.json --dry-run --no-ci 2>&1 || true)
           echo "$OUTPUT"
 
-          # Extract version information (compatible with both GNU and BSD grep)
+          # Restore main config
+          mv .releaserc.json.bak .releaserc.json
+
+          # Extract version information
           NEW_VERSION=$(echo "$OUTPUT" | grep -Eo "The next release version is [0-9]+\.[0-9]+\.[0-9]+" | grep -Eo "[0-9]+\.[0-9]+\.[0-9]+" || echo "")
           RELEASE_TYPE=$(echo "$OUTPUT" | grep -Eo "Analysis of [0-9]+ commits complete: [a-z]+ release" | grep -Eo "(major|minor|patch) release" | sed 's/ release//' || echo "")
 
@@ -62,10 +79,6 @@ jobs:
           echo "full_output<<EOF" >> $GITHUB_OUTPUT
           echo "$OUTPUT" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REF: refs/heads/main
-          GITHUB_REF_NAME: main
 
       - name: Display Preview
         run: |
