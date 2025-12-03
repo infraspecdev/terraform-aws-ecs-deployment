@@ -66,11 +66,17 @@ jobs:
         id: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Override GitHub's environment variables to make semantic-release see the actual PR branch
-          GITHUB_REF: refs/heads/${{ github.event.pull_request.head.ref }}
-          GITHUB_REF_NAME: ${{ github.event.pull_request.head.ref }}
-          GITHUB_HEAD_REF: ""
         run: |
+          # Unset GitHub Actions environment variables that interfere with semantic-release
+          unset GITHUB_REF
+          unset GITHUB_REF_NAME
+          unset GITHUB_HEAD_REF
+          unset GITHUB_BASE_REF
+
+          # Set them to what we want
+          export GITHUB_REF="refs/heads/${{ github.event.pull_request.head.ref }}"
+          export GITHUB_REF_NAME="${{ github.event.pull_request.head.ref }}"
+
           echo "=== Debug Info ==="
           echo "Expected branch: ${{ github.event.pull_request.head.ref }}"
           echo "Current git branch: $(git branch --show-current)"
