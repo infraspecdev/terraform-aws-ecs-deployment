@@ -18,17 +18,6 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.ref }}
 
-      - name: Simulate merge to main
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin main
-          git checkout -B main origin/main
-          git merge --no-ff origin/${{ github.event.pull_request.head.ref }} -m "temp: simulate PR merge for release preview"
-          echo "Current branch: $(git branch --show-current)"
-          echo "Latest commits:"
-          git log --oneline -5
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -39,10 +28,10 @@ jobs:
           # Backup original config
           cp .releaserc.json .releaserc.json.bak
 
-          # Update config for preview mode (branch is main since we merged in previous step)
-          cat > .releaserc.json << 'EOF'
+          # Update config for preview mode using the PR branch name
+          cat > .releaserc.json << EOF
           {
-            "branches": ["main"],
+            "branches": ["${{ github.event.pull_request.head.ref }}"],
             "debug": true,
             "ci": false,
             "dryRun": true,
@@ -53,6 +42,8 @@ jobs:
             ]
           }
           EOF
+
+          echo "Updated .releaserc.json for branch: ${{ github.event.pull_request.head.ref }}"
 
       - name: Run semantic-release (dry-run)
         id: semantic
