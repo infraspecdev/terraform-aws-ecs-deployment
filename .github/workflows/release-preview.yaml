@@ -34,37 +34,36 @@ jobs:
         with:
           node-version: 'lts/*'
 
-      - name: Install semantic-release
+      - name: Update config for preview
         run: |
-          npm install --save-dev semantic-release@18.0.0 \
-            @semantic-release/commit-analyzer@9.0.2 \
-            @semantic-release/release-notes-generator@10.0.3 \
-            conventional-changelog-conventionalcommits@4.6.3
+          # Backup original config
+          cp .releaserc.json .releaserc.json.bak
 
-      - name: Create preview config
-        run: |
-          # Create a config without GitHub plugin for preview (avoids token validation)
-          cat > .releaserc.preview.json << 'EOF'
+          # Update config for preview mode (branch is main since we merged in previous step)
+          cat > .releaserc.json << 'EOF'
           {
             "branches": ["main"],
+            "debug": true,
+            "ci": false,
+            "dryRun": true,
             "plugins": [
               "@semantic-release/commit-analyzer",
-              "@semantic-release/release-notes-generator"
+              "@semantic-release/release-notes-generator",
+              "@semantic-release/github"
             ]
           }
           EOF
 
       - name: Run semantic-release (dry-run)
         id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Temporarily rename main config to use preview config only
-          mv .releaserc.json .releaserc.json.bak
-
-          # Run semantic-release in dry-run mode with preview config only
-          OUTPUT=$(npx semantic-release --extends ./.releaserc.preview.json --dry-run --no-ci 2>&1 || true)
+          # Run semantic-release with inline package installation (same as your local command)
+          OUTPUT=$(npx --package semantic-release --package @semantic-release/exec --package conventional-changelog-conventionalcommits semantic-release 2>&1 || true)
           echo "$OUTPUT"
 
-          # Restore main config
+          # Restore original config
           mv .releaserc.json.bak .releaserc.json
 
           # Extract version information
