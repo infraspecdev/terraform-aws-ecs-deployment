@@ -49,7 +49,13 @@ jobs:
         id: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Override GitHub's environment variables to make semantic-release see the actual PR branch
+          GITHUB_REF: refs/heads/${{ github.event.pull_request.head.ref }}
+          GITHUB_REF_NAME: ${{ github.event.pull_request.head.ref }}
+          GITHUB_HEAD_REF: ""
         run: |
+          echo "Running semantic-release on branch: ${{ github.event.pull_request.head.ref }}"
+
           # Run semantic-release with inline package installation (same as your local command)
           OUTPUT=$(npx --package semantic-release --package @semantic-release/exec --package conventional-changelog-conventionalcommits semantic-release 2>&1 || true)
           echo "$OUTPUT"
