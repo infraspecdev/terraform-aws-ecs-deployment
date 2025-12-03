@@ -20,7 +20,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
     uses: ./.github/workflows/release-preview.yaml
     permissions:
-      contents: read
+      contents: write
       pull-requests: write
 
   preCommitCheck:
