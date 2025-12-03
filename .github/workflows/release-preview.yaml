@@ -23,9 +23,11 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin main
-          git checkout main
-          git checkout -b temp-preview-branch
+          git checkout -B main origin/main
           git merge --no-ff origin/${{ github.event.pull_request.head.ref }} -m "temp: simulate PR merge for release preview"
+          echo "Current branch: $(git branch --show-current)"
+          echo "Latest commits:"
+          git log --oneline -5
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -44,7 +46,8 @@ jobs:
         id: semantic
         run: |
           # Run semantic-release in dry-run mode and capture output
-          OUTPUT=$(npx semantic-release --dry-run --no-ci 2>&1 || true)
+          # Override branch config to treat current branch as 'main'
+          OUTPUT=$(npx semantic-release --dry-run --no-ci --branches main 2>&1 || true)
           echo "$OUTPUT"
 
           # Extract version information
