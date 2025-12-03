@@ -31,36 +31,22 @@ jobs:
         with:
           node-version: 'lts/*'
 
-      - name: Update config for preview
+      - name: Setup preview config
         run: |
-          # Backup original config
-          cp .releaserc.json .releaserc.json.bak
-
-          echo "=== Original .releaserc.json ==="
-          cat .releaserc.json.bak
-          echo "================================"
-          echo ""
-
-          # Update config for preview mode using the PR branch name
-          cat > .releaserc.json << EOF
-          {
-            "branches": ["${{ github.event.pull_request.head.ref }}"],
-            "debug": true,
-            "ci": false,
-            "dryRun": true,
-            "plugins": [
-              "@semantic-release/commit-analyzer",
-              "@semantic-release/release-notes-generator",
-              "@semantic-release/github"
-            ]
-          }
-          EOF
-
-          echo "=== Updated .releaserc.json ==="
+          echo "=== Main .releaserc.json ==="
           cat .releaserc.json
-          echo "==============================="
+          echo "=============================="
           echo ""
-          echo "Config updated for branch: ${{ github.event.pull_request.head.ref }}"
+
+          # Update preview config with the PR branch name
+          sed -i.bak "s/BRANCH_PLACEHOLDER/${{ github.event.pull_request.head.ref }}/g" .preview-releaserc.json
+          rm .preview-releaserc.json.bak
+
+          echo "=== Preview .preview-releaserc.json ==="
+          cat .preview-releaserc.json
+          echo "========================================"
+          echo ""
+          echo "Preview config ready for branch: ${{ github.event.pull_request.head.ref }}"
 
       - name: Run semantic-release (dry-run)
         id: semantic
@@ -90,12 +76,17 @@ jobs:
           echo "=================="
           echo ""
 
+          # Temporarily use preview config
+          mv .releaserc.json .releaserc.json.main
+          cp .preview-releaserc.json .releaserc.json
+
           # Run semantic-release with inline package installation (same as your local command)
           OUTPUT=$(npx --package semantic-release --package @semantic-release/exec --package conventional-changelog-conventionalcommits semantic-release 2>&1 || true)
           echo "$OUTPUT"
 
           # Restore original config
-          mv .releaserc.json.bak .releaserc.json
+          rm .releaserc.json
+          mv .releaserc.json.main .releaserc.json
 
           # Extract version information
           NEW_VERSION=$(echo "$OUTPUT" | grep -Eo "The next release version is [0-9]+\.[0-9]+\.[0-9]+" | grep -Eo "[0-9]+\.[0-9]+\.[0-9]+" || echo "")
