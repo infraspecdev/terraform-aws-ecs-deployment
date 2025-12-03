@@ -16,7 +16,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref }}
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Simulate merge to main
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git checkout main
+          git checkout -b temp-preview-branch
+          git merge --no-ff origin/${{ github.event.pull_request.head.ref }} -m "temp: simulate PR merge for release preview"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
