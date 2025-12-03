@@ -22,9 +22,6 @@ jobs:
         run: |
           # Explicitly checkout to the PR branch by name
           git checkout -B ${{ github.event.pull_request.head.ref }}
-          echo "Current branch: $(git branch --show-current)"
-          echo "Git status:"
-          git status
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -33,20 +30,9 @@ jobs:
 
       - name: Setup preview config
         run: |
-          echo "=== Main .releaserc.json ==="
-          cat .releaserc.json
-          echo "=============================="
-          echo ""
-
           # Update preview config with the PR branch name
           sed -i.bak "s/BRANCH_PLACEHOLDER/${{ github.event.pull_request.head.ref }}/g" .preview-releaserc.json
           rm .preview-releaserc.json.bak
-
-          echo "=== Preview .preview-releaserc.json ==="
-          cat .preview-releaserc.json
-          echo "========================================"
-          echo ""
-          echo "Preview config ready for branch: ${{ github.event.pull_request.head.ref }}"
 
       - name: Run semantic-release (dry-run)
         id: semantic
@@ -66,15 +52,6 @@ jobs:
           # Set them to what we want
           export GITHUB_REF="refs/heads/${{ github.event.pull_request.head.ref }}"
           export GITHUB_REF_NAME="${{ github.event.pull_request.head.ref }}"
-
-          echo "=== Debug Info ==="
-          echo "Expected branch: ${{ github.event.pull_request.head.ref }}"
-          echo "Current git branch: $(git branch --show-current)"
-          echo "GITHUB_REF: $GITHUB_REF"
-          echo "GITHUB_REF_NAME: $GITHUB_REF_NAME"
-          echo "GITHUB_HEAD_REF: $GITHUB_HEAD_REF"
-          echo "=================="
-          echo ""
 
           # Temporarily use preview config
           mv .releaserc.json .releaserc.json.main
