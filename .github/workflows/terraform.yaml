@@ -15,6 +15,14 @@ on:
       - main
       - master
 jobs:
+  releasePreview:
+    name: Release Preview
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
+    uses: ./.github/workflows/release-preview.yaml
+    permissions:
+      contents: read
+      pull-requests: write
+
   preCommitCheck:
     name: Terraform Checks
     uses: ./.github/workflows/terraform-checks.yaml
