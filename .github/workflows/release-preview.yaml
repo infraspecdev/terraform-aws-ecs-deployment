@@ -18,6 +18,14 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.ref }}
 
+      - name: Setup branch for semantic-release
+        run: |
+          # Explicitly checkout to the PR branch by name
+          git checkout -B ${{ github.event.pull_request.head.ref }}
+          echo "Current branch: $(git branch --show-current)"
+          echo "Git status:"
+          git status
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -27,6 +35,11 @@ jobs:
         run: |
           # Backup original config
           cp .releaserc.json .releaserc.json.bak
+
+          echo "=== Original .releaserc.json ==="
+          cat .releaserc.json.bak
+          echo "================================"
+          echo ""
 
           # Update config for preview mode using the PR branch name
           cat > .releaserc.json << EOF
@@ -43,7 +56,11 @@ jobs:
           }
           EOF
 
-          echo "Updated .releaserc.json for branch: ${{ github.event.pull_request.head.ref }}"
+          echo "=== Updated .releaserc.json ==="
+          cat .releaserc.json
+          echo "==============================="
+          echo ""
+          echo "Config updated for branch: ${{ github.event.pull_request.head.ref }}"
 
       - name: Run semantic-release (dry-run)
         id: semantic
@@ -54,7 +71,14 @@ jobs:
           GITHUB_REF_NAME: ${{ github.event.pull_request.head.ref }}
           GITHUB_HEAD_REF: ""
         run: |
-          echo "Running semantic-release on branch: ${{ github.event.pull_request.head.ref }}"
+          echo "=== Debug Info ==="
+          echo "Expected branch: ${{ github.event.pull_request.head.ref }}"
+          echo "Current git branch: $(git branch --show-current)"
+          echo "GITHUB_REF: $GITHUB_REF"
+          echo "GITHUB_REF_NAME: $GITHUB_REF_NAME"
+          echo "GITHUB_HEAD_REF: $GITHUB_HEAD_REF"
+          echo "=================="
+          echo ""
 
           # Run semantic-release with inline package installation (same as your local command)
           OUTPUT=$(npx --package semantic-release --package @semantic-release/exec --package conventional-changelog-conventionalcommits semantic-release 2>&1 || true)
