@@ -5,7 +5,7 @@ on:
 
 env:
   SEMANTIC_RELEASE_VERSION: '24.2.0'
-  NODE_VERSION: '20.x'
+  NODE_VERSION: '20.11.0'
 
 jobs:
   preview:
