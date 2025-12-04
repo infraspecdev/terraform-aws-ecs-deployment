@@ -15,6 +15,17 @@ on:
       - main
       - master
 jobs:
+  prTitlecheck:
+    name: PR title check
+    uses: ./.github/workflows/pr-title.yaml
+
+  releasePreview:
+    name: Release Preview
+    uses: ./.github/workflows/release-preview.yaml
+    permissions:
+      contents: write
+      pull-requests: write
+
   preCommitCheck:
     name: Terraform Checks
     uses: ./.github/workflows/terraform-checks.yaml
